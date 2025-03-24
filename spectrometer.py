@@ -31,7 +31,7 @@ class StellarnetBlueWave:
 
     @property
     def x_timing(self):
-        return self.spectrometer["device"].get_config()["int_time"]
+        return self.spectrometer["device"].get_config()["x_timing"]
 
     @x_timing.setter
     def x_timing(self, x_timing):
