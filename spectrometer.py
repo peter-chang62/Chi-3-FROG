@@ -1,8 +1,11 @@
-from spectrometer_hardware.stellarnet_driverLibs import stellarnet_driver3 as sn
+# from spectrometer_hardware.stellarnet_driverLibs import stellarnet_driver3 as sn
 
 
 class StellarnetBlueWave:
     def __init__(self, *args, **kwargs):
+        global sn
+        from spectrometer_hardware.stellarnet_driverLibs import stellarnet_driver3 as sn
+
         self.initialize()
 
         self._ext_trig = False
