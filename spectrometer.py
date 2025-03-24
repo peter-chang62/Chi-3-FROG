@@ -5,6 +5,8 @@ class StellarnetBlueWave:
     def __init__(self, *args, **kwargs):
         self.initialize()
 
+        self._ext_trig = False
+
     def initialize(self):
         self._spectrometer, self._wl = sn.array_get_spec(0)
         self._wl = self._wl.flatten()
@@ -57,7 +59,16 @@ class StellarnetBlueWave:
     def x_smooth(self, x_smooth):
         self.spectrometer["device"].set_config(x_smooth=x_smooth)
 
+    @property
+    def ext_trig(self):
+        return self._ext_trig
+
+    @ext_trig.setter
+    def ext_trig(self, ext_trig):
+        sn.ext_trig(self.spectrometer, ext_trig)
+        self._ext_trig = ext_trig
+
 
 s = StellarnetBlueWave()
 print(s.spectrometer["device"].get_config())
-s.spectrometer["device"].__del__()
+s.reset()
