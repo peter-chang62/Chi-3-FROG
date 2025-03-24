@@ -11,7 +11,7 @@ class StellarnetBlueWave:
 
     def reset(self):
         self.spectrometer["device"].__del__()
-        print("deleted spectrometer")
+        print("freed spectrometer")
 
     @property
     def spectrometer(self):
@@ -40,6 +40,14 @@ class StellarnetBlueWave:
     @property
     def spectrum(self):
         return self.spectrometer["device"].read_spectrum()
+
+    @property
+    def n_avg(self):
+        return self.spectrometer["device"].get_config()["scans_to_avg"]
+
+    @n_avg.setter
+    def n_avg(self, n_avg):
+        self.spectrometer["device"].set_config(scans_to_avg=n_avg)
 
 
 s = StellarnetBlueWave()
