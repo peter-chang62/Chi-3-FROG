@@ -49,6 +49,14 @@ class StellarnetBlueWave:
     def n_avg(self, n_avg):
         self.spectrometer["device"].set_config(scans_to_avg=n_avg)
 
+    @property
+    def x_smooth(self):
+        return self.spectrometer["device"].get_config()["x_smooth"]
+
+    @x_smooth.setter
+    def x_smooth(self, x_smooth):
+        self.spectrometer["device"].set_config(x_smooth=x_smooth)
+
 
 s = StellarnetBlueWave()
 print(s.spectrometer["device"].get_config())
