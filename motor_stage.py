@@ -87,3 +87,13 @@ class Stage:
 
     def home(self):
         self.send_message(1)
+
+    def get_position(self):
+        self.send_message(60)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
+
+    def get_device_id(self):
+        self.send_message(50)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
