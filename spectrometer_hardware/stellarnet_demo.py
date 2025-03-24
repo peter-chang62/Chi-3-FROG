@@ -72,3 +72,5 @@ else:
 
 # Print data/spect
 print(data)
+
+reset(spectrometer)
