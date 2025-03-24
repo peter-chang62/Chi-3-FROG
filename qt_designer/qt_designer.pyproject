@@ -1,0 +1,7 @@
+{
+    "files": [
+        "mainwindow.py",
+        "form.ui",
+        "pyqt5ac_util.py"
+    ]
+}
