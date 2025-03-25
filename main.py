@@ -30,19 +30,30 @@ class SpectrometerTab:
         self.connect_line_edits_signals_slots()
         self.connect_push_buttons_signals_slots()
 
+        self._initialized_hardware = False
+
     def initialize_hardware(self):
+        # fetch spectrometer
         try:
             self.spectrometer = StellarnetBlueWave()
             self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))
-            self.spectrometer.reset()
+            self.spectrometer.reset()  # release spectrometer
+            return
+
+        # successfuly fetched spectrometer
+        # now fetch the stage
         try:
             self.stage = ZaberStage(self.ui.le_stage_com_port.text())
             self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))
-            self.stage.ser.close()
+            self.stage.ser.close()  # release stage
+            self.spectrometer.reset()  # and release spectrometer
+            return
+
+        self._initialized_hardware = True
 
     def set_validators(self):
         ui = self.ui
@@ -124,6 +135,12 @@ class SpectrometerTab:
         self.target_pos_um = float(self.ui.le_target_pos_um.text())
 
     # -------------------------------------------------------------------------
+
+    def slot_pb_home(self):
+        if self._initialized_hardware:
+            self.stage.home()
+        else:
+            self.ui.le_error.setText("no hardware initialized")
 
 
 if __name__ == "__main__":
