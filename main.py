@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.tab_spectrometer = SpectrometerTab(self.ui)
 
     def closeEvent(self, event):
-        print("I closed")
+        self.tab_spectrometer.closeEvent(event)
         super().closeEvent(event)
 
 
@@ -58,6 +58,11 @@ class SpectrometerTab:
             return
 
         self._initialized_hardware = True
+
+    def closeEvent(self, event):
+        if self._initialized_hardware:
+            self.spectrometer.reset()
+            self.stage.ser.close()
 
     def set_validators(self):
         ui = self.ui
