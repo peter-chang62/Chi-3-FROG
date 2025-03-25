@@ -244,7 +244,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
         self.timer = QtCore.QTimer(interval=interval)
         self.timer.timeout.connect(self.slot_timeout)
 
-        self.x_encoder_previous = 0
+        self.x_encoder_previous = None
 
     def start_timer(self):
         self.timer.start()
@@ -254,6 +254,10 @@ class WorkerMonitorStagePos(QtCore.QObject):
         x = x_encoder / self.stage._max_pos * self.stage._max_range
         x *= mm / um  # convert to um
         self.progress.emit(x)
+
+        if self.x_encoder_previous is None:
+            self.x_encoder_previous = x_encoder
+            return
 
         if x_encoder == self.x_encoder_previous:
             # check for idle status, if not necessary then comment out
