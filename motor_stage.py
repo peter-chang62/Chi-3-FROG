@@ -74,5 +74,5 @@ class Stage:
         78 - executing a move index instruction
         """
         self.send_message(54)
-        msg = self.ser.read(6)
-        return struct.unpack("2Bl", msg)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
