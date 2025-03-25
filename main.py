@@ -121,7 +121,7 @@ class SpectrometerTab:
 
     @T0_um.setter
     def T0_um(self, T0_um):
-        np.savetxt("T0_um.txt", np.asarray(T0_um))
+        np.savetxt("T0_um.txt", np.asarray([T0_um]))
 
     @property
     def target_pos_um(self):
