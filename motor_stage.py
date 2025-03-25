@@ -102,6 +102,6 @@ class Stage:
             peripherals, see Appendix C: Configuring and Activating Peripherals.
         99  The device is performing a motion.
         """
-        self.send_mesage(54)
+        self.send_message(54)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
