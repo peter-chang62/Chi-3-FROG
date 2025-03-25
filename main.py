@@ -63,6 +63,15 @@ class SpectrometerTab:
             return
 
         self._initialized_hardware = True
+        self.create_threads_workers()
+
+    def create_threads_workers(self):
+        self.thread_stage = QtCore.QThread()
+        self.worker_stage = WorkerMonitorStagePos(100, self.stage)
+        self.worker_stage.moveToThread(self.thread_stage)
+        self.thread_stage.started.connect(self.worker_stage.start_timer)
+        self.worker_stage.progress.connect(self.slot_lcd_current_pos_um)
+        self.worker_stage.finished.connect(self.thread_stage.quit)
 
     def closeEvent(self, event):
         if self._initialized_hardware:
@@ -156,20 +165,17 @@ class SpectrometerTab:
     # ------ stage motion -----------------------------------------------------
 
     def slot_pb_home(self):
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         if self._initialized_hardware:
             self.stage.home()
         else:
             self.ui.le_error.setText("no hardware initialized")
+            return
 
-        self.worker = WorkerMonitorStagePos(100, self.stage)
-        self.thread = QtCore.QThread()
-        self.worker.moveToThread(self.thread)
-
-        self.thread.started.connect(self.worker.start_timer)
-        self.worker.progress.connect(self.slot_lcd_current_pos_um)
-        self.worker.finished.connect(self.thread.quit)
-
-        self.thread.start()
+        self.thread_stage.start()
 
     def slot_pb_absolute_move(self):
         if not self._initialized_hardware:
