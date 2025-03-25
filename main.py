@@ -161,15 +161,15 @@ class SpectrometerTab:
         else:
             self.ui.le_error.setText("no hardware initialized")
 
-        worker = WorkerMonitorStagePos(100, self.stage)
-        thread = QtCore.QThread()
-        worker.moveToThread(thread)
+        self.worker = WorkerMonitorStagePos(100, self.stage)
+        self.thread = QtCore.QThread()
+        self.worker.moveToThread(self.thread)
 
-        thread.started.connect(worker.start_timer)
-        worker.progress.connect(self.slot_lcd_current_pos_um)
-        worker.finished.connect(thread.quit)
+        self.thread.started.connect(self.worker.start_timer)
+        self.worker.progress.connect(self.slot_lcd_current_pos_um)
+        self.worker.finished.connect(self.thread.quit)
 
-        thread.start()
+        self.thread.start()
 
     def slot_pb_absolute_move(self):
         if not self._initialized_hardware:
@@ -241,12 +241,13 @@ class WorkerMonitorStagePos(QtCore.QObject):
 
         stage: ZaberStage
         self.stage = stage
-        self.timer = QtCore.QTimer(interval=interval)
-        self.timer.timeout.connect(self.slot_timeout)
-
+        self.interval = interval
         self.x_encoder_previous = None
 
     def start_timer(self):
+        # timer must be created and started by the same thread!
+        self.timer = QtCore.QTimer(interval=self.interval)
+        self.timer.timeout.connect(self.slot_timeout)
         self.timer.start()
 
     def slot_timeout(self):
