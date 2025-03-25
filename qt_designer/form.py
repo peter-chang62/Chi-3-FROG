@@ -444,7 +444,7 @@ class Ui_MainWindow(object):
         self.label_17.setText(_translate("MainWindow", "x min"))
         self.label_4.setText(_translate("MainWindow", "x max"))
         self.label_23.setText(_translate("MainWindow", "Zaber Stage Com Port"))
-        self.le_stage_com_port.setText(_translate("MainWindow", "COM 3"))
+        self.le_stage_com_port.setText(_translate("MainWindow", "COM3"))
         self.pb_initialize_hardware.setText(_translate("MainWindow", "initialize hardware"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_spectrometer), _translate("MainWindow", "Spectrometer"))
         self.label_9.setText(_translate("MainWindow", "y max"))
