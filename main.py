@@ -257,6 +257,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
         self.timer.start()
 
     def slot_timeout(self):
+        # get current stage position
         (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range
         x *= mm / um  # convert to um
@@ -267,10 +268,12 @@ class WorkerMonitorStagePos(QtCore.QObject):
             return
 
         if x_encoder == self.x_encoder_previous:
-            # check for idle status
-            (status,) = self.stage.return_status()
-            if status == 0:
-                self.stop_timer()
+            # # check for idle status if stage does not appear to be moving
+            # (status,) = self.stage.return_status()
+            # if status == 0:
+            #     self.stop_timer()
+
+            self.stop_timer()
         self.x_encoder_previous = x_encoder
 
     def stop_timer(self):
