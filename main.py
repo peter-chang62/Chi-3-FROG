@@ -97,7 +97,7 @@ class SpectrometerTab:
         self.ui.pb_absolute_move.clicked.connect(self.slot_pb_absolute_move)
         self.ui.pb_set_t0.clicked.connect(self.slot_pb_set_t0)
 
-    # -------- relative move --------------------------------------------------
+    # -------- line edits for relative move -----------------------------------
     @property
     def step_um(self):
         return float(self.ui.le_step_um.text())
@@ -115,7 +115,7 @@ class SpectrometerTab:
     def step_fs(self, step_fs):
         self.step_um = (c * step_fs * fs / 2) / um
 
-    # -------- absolute move --------------------------------------------------
+    # -------- line edits for absolute move -----------------------------------
     @property
     def T0_um(self):
         return np.genfromtxt("T0_um.txt")
@@ -153,13 +153,23 @@ class SpectrometerTab:
     def slot_le_target_pos_um(self):
         self.target_pos_um = float(self.ui.le_target_pos_um.text())
 
-    # -------------------------------------------------------------------------
+    # ------ stage motion -----------------------------------------------------
 
     def slot_pb_home(self):
         if self._initialized_hardware:
             self.stage.home()
         else:
             self.ui.le_error.setText("no hardware initialized")
+
+        worker = WorkerMonitorStagePos(100, self.stage)
+        thread = QtCore.QThread()
+        worker.moveToThread(thread)
+
+        thread.started.connect(worker.start_timer)
+        worker.progress.connect(self.slot_lcd_current_pos_um)
+        worker.finished.connect(thread.quit)
+
+        thread.start()
 
     def slot_pb_absolute_move(self):
         if not self._initialized_hardware:
@@ -171,7 +181,7 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x) * um / mm
+        x = float(x) * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_absolute(int(np.round(x_encoder)))
 
@@ -185,7 +195,7 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x) * um / mm
+        x = float(x) * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(-x_encoder)))
 
@@ -199,13 +209,14 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x) * um / mm
+        x = float(x) * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(x_encoder)))
 
     def slot_pb_set_t0(self):
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range * mm / um
+        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x *= mm / um  # convert to um
         self.T0_um = x
 
         self.slot_lcd_current_pos_um()
@@ -213,11 +224,48 @@ class SpectrometerTab:
 
     def slot_lcd_current_pos_um(self):
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range * mm / um
+        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x *= mm / um  # convert to um
         self.ui.lcd_current_pos_um.display(np.round(x, 3))
         self.ui.lcd_current_pos_fs.display(
             np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
         )
+
+
+class WorkerMonitorStagePos(QtCore.QObject):
+    progress = QtCore.pyqtSignal(float)
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, interval, stage):
+        super().__init__()
+
+        stage: ZaberStage
+        self.stage = stage
+        self.timer = QtCore.QTimer(interval=interval)
+        self.timer.timeout.connect(self.slot_timeout)
+
+        self.x_encoder_previous = 0
+
+    def start_timer(self):
+        self.timer.start()
+
+    def slot_timeout(self):
+        (x_encoder,) = self.stage.return_current_position()
+        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x *= mm / um  # convert to um
+        self.progress.emit(x)
+
+        if x_encoder == self.x_encoder_previous:
+            # check for idle status, if not necessary then comment out
+            (status,) = self.stage.return_status()
+            if status == 0:
+                self.stop_timer()
+        self.x_encoder_previous = x_encoder
+
+    def stop_timer(self):
+        if self.timer.isActive():
+            self.timer.stop()
+            self.finished.emit()
 
 
 if __name__ == "__main__":
