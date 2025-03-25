@@ -108,16 +108,6 @@ class Stage:
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
-    def return_encoder_count(self):
-        self.send_message(82)
-        cmd_num, msg = self.receive_message()
-        return struct.unpack("l", msg)
-
-    def return_encoder_position(self):
-        self.send_message(89)
-        cmd_num, msg = self.receive_message()
-        return struct.unpack("l", msg)
-
     def return_status(self):
         """
         0   The device is idle and is not performing any motion.
