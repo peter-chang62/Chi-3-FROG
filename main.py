@@ -172,7 +172,7 @@ class SpectrometerTab:
 
         x = float(x)
         x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
-        self.stage.move_absolute(x_encoder)
+        self.stage.move_absolute(int(np.round(x_encoder)))
 
     def slot_pb_step_back(self):
         if not self._initialized_hardware:
@@ -186,7 +186,7 @@ class SpectrometerTab:
 
         x = float(x)
         x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
-        self.stage.move_relative(-x_encoder)
+        self.stage.move_relative(int(np.round(-x_encoder)))
 
     def slot_pb_step_forward(self):
         if not self._initialized_hardware:
@@ -200,7 +200,7 @@ class SpectrometerTab:
 
         x = float(x)
         x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
-        self.stage.move_relative(x_encoder)
+        self.stage.move_relative(int(np.round(x_encoder)))
 
     def slot_pb_set_t0(self):
         (x_encoder,) = self.stage.return_current_position()
