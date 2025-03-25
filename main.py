@@ -37,6 +37,10 @@ class SpectrometerTab:
         self._initialized_hardware = False
 
     def initialize_hardware(self):
+        if self._initialized_hardware:
+            self.ui.le_error("hardware already initialized")
+            return
+
         # fetch spectrometer
         try:
             self.spectrometer = StellarnetBlueWave()
