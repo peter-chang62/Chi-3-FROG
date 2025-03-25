@@ -64,10 +64,18 @@ import struct
 
 class Stage:
     def __init__(self, port):
-        self.ser = serial.Serial(port=port, timeout=5)
+        # serial port with 1 minute timeout
+        self.ser = serial.Serial(port=port, timeout=60)
 
         self._max_pos = 1066667
         self._max_range = 50.8
+
+        self._cmd_home = 1
+        self._cmd_move_absolute = 20
+        self._cmd_move_relative = 21
+        self._cmd_move_at_constant_speed = 22
+        self._cmd_stop = 23
+        self._cmd_return_current_position = 60
 
     @property
     def device(self):
@@ -89,34 +97,21 @@ class Stage:
         return command_number, msg_received
 
     def home(self):
-        self.send_message(1)
+        self.send_message(self._cmd_home)
 
     def move_absolute(self, pos):
-        self.send_message(20, pos)
+        self.send_message(self._cmd_move_absolute, pos)
 
     def move_relative(self, step):
-        self.send_message(21, step)
+        self.send_message(self._cmd_move_relative, step)
 
     def move_at_constant_speed(self, vel):
-        self.send_message(22, vel)
+        self.send_message(self._cmd_move_at_constant_speed, vel)
 
     def stop(self):
-        self.send_message(23)
+        self.send_message(self._cmd_stop)
 
     def return_current_position(self):
-        self.send_message(60)
-        cmd_num, msg = self.receive_message()
-        return struct.unpack("l", msg)
-
-    def return_status(self):
-        """
-        0   The device is idle and is not performing any motion.
-        65  The device is parked.
-        90  The driver is disabled. The device cannot move.
-        93  The peripheral is inactive. For more information about activating
-            peripherals, see Appendix C: Configuring and Activating Peripherals.
-        99  The device is performing a motion.
-        """
-        self.send_message(54)
+        self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
