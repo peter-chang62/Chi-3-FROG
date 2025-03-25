@@ -206,7 +206,17 @@ class SpectrometerTab:
         (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
         self.T0_um = x
+
+        self.slot_lcd_current_pos_um()
         self.slot_le_target_pos_fs()
+
+    def slot_lcd_current_pos_um(self):
+        (x_encoder,) = self.stage.return_current_position()
+        x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
+        self.ui.lcd_current_pos_um.display(np.round(x, 3))
+        self.ui.lcd_current_pos_fs.display(
+            np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
+        )
 
 
 if __name__ == "__main__":
