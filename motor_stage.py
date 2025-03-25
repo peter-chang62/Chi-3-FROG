@@ -2,7 +2,15 @@ import serial
 import struct
 
 
-class Stage:
+class ZaberStage:
+    """
+    Please see this documentation:
+    https://www.zaber.com/w/Manuals/Binary_Protocol_Manual#Set_Index_Distance_-_Cmd_79
+
+    For newer firmware (7), please see this documentation:
+    https://www.zaber.com/protocol-manual?protocol=Binary#topic_return_054_status
+    """
+
     def __init__(self, port):
         # serial port with 1 minute timeout
         self.ser = serial.Serial(port=port, timeout=60)
@@ -22,12 +30,8 @@ class Stage:
         # assume only one zaber stage is connected (no daisy chain)
         return 1
 
-    def send_message(self, command_number, data=None):
-        if data is None:
-            msg = struct.pack("<6B", self.device, command_number, 0, 0, 0, 0)
-        else:
-            msg = struct.pack("<2Bl", self.device, command_number, data)
-
+    def send_message(self, command_number, data=0):
+        msg = struct.pack("<2Bl", self.device, command_number, data)
         self.ser.write(msg)
 
     def receive_message(self):
@@ -35,7 +39,7 @@ class Stage:
         command_number = msg[1]
         msg_received = msg[2:]
 
-        assert command_number != 255, "error occured"
+        assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
 
     def home(self):
