@@ -10,6 +10,7 @@ from motor_stage import ZaberStage
 
 fs = 1e-15
 um = 1e-6
+mm = 1e-3
 
 
 class MainWindow(QMainWindow):
@@ -170,8 +171,8 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x)
-        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        x = float(x) * um / mm
+        x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_absolute(int(np.round(x_encoder)))
 
     def slot_pb_step_back(self):
@@ -184,8 +185,8 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x)
-        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        x = float(x) * um / mm
+        x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(-x_encoder)))
 
     def slot_pb_step_forward(self):
@@ -198,13 +199,13 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x)
-        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        x = float(x) * um / mm
+        x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(x_encoder)))
 
     def slot_pb_set_t0(self):
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
+        x = x_encoder / self.stage._max_pos * self.stage._max_range * mm / um
         self.T0_um = x
 
         self.slot_lcd_current_pos_um()
@@ -212,7 +213,7 @@ class SpectrometerTab:
 
     def slot_lcd_current_pos_um(self):
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
+        x = x_encoder / self.stage._max_pos * self.stage._max_range * mm / um
         self.ui.lcd_current_pos_um.display(np.round(x, 3))
         self.ui.lcd_current_pos_fs.display(
             np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
