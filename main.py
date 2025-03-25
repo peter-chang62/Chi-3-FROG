@@ -262,16 +262,20 @@ class WorkerMonitorStagePos(QtCore.QObject):
         x *= mm / um  # convert to um
         self.progress.emit(x)
 
-        if self.x_encoder_previous is None:
-            self.x_encoder_previous = x_encoder
-            return
+        (status,) = self.stage.return_status()
+        if status == 0:
+            self.stop_timer()
 
-        if x_encoder == self.x_encoder_previous:
-            # check for idle status
-            (status,) = self.stage.return_status()
-            if status == 0:
-                self.stop_timer()
-        self.x_encoder_previous = x_encoder
+        # if self.x_encoder_previous is None:
+        #     self.x_encoder_previous = x_encoder
+        #     return
+
+        # if x_encoder == self.x_encoder_previous:
+        #     # check for idle status
+        #     (status,) = self.stage.return_status()
+        #     if status == 0:
+        #         self.stop_timer()
+        # self.x_encoder_previous = x_encoder
 
     def stop_timer(self):
         if self.timer.isActive():
