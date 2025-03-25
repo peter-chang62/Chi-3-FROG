@@ -38,7 +38,7 @@ class SpectrometerTab:
 
     def initialize_hardware(self):
         if self._initialized_hardware:
-            self.ui.le_error("hardware already initialized")
+            self.ui.le_error.setText("hardware already initialized")
             return
 
         # fetch spectrometer
