@@ -155,6 +155,9 @@ class SpectrometerTab:
         else:
             self.ui.le_error.setText("no hardware initialized")
 
+    def get_stage_status(self):
+        return self.stage.return_status()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
