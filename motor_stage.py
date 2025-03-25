@@ -66,6 +66,9 @@ class Stage:
     def __init__(self, port):
         self.ser = serial.Serial(port=port)
 
+        self._max_pos = 1066667
+        self._max_range = 50.8
+
     @property
     def device(self):
         # assume only one zaber stage is connected (no daisy chain)
