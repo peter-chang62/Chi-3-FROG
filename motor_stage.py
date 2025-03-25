@@ -1,63 +1,3 @@
-"""
-*Zaber stage communication protocol*:
-
-All Binary messages consist of six bytes. They must be transmitted with less
-than 10 milliseconds between each byte. If the device has received less than
-six bytes and a period longer than 10 milliseconds passes, it will assume the
-remaining data has been lost and will discard the previously received bytes.
-We recommend that customer software behave similarly when receiving data from
-devices, especially in electrically noisy environments.
-
-The six bytes are ordered as follows:
-
-    1. Device number
-    2. Command number
-    3. Data, least significant byte (LSB)
-    4. Data
-    5. Data
-    6. Data, most significant byte (MSB)
-
-The first byte is the device number in the daisy-chain. Generally, device
-number 1 is the closest device to the computer, device 2 is next, and so on
-(see Renumber (Cmd 2) to sequentially number devices in the chain). If the
-number 0 is used, the command will be directed to all devices in the chain.
-Each axis of a multi-axis device appears as a separate device with its own
-device number.
-
-The second byte is the command number. Bytes 3, 4, 5, and 6 can be combined to
-form a signed 32-bit data value, with the least significant byte transmitted
-first (see Appendix B: Message Data Conversion Algorithm for more details).
-Each command interprets the data value differently.
-
-There are four types of commands:
-
-Action commands: Commands that cause the device to perform an action
-(e.g., move). See Action Command Reference for a list of all action commands.
-
-Set commands: Commands that set the value of a setting. See Set Command
-Reference for a list of all set commands.
-
-Return commands: Commands that return a setting’s value. See Return Command
-Reference for a list of all return commands.
-
-Reply-Only commands: Messages that are only ever sent from the device to the
-user. Most are spontaneously sent by the device and are not in response to a
-user command. See Reply-Only Command Reference for a list of all reply-only
-commands.
-
-Most commands elicit a reply message in the same six-byte format, with a few
-minor differences. The first byte in the reply is the number of the device
-that just finished executing the command, not the device number the original
-message was sent to. For instance, a message addressed to 0 (i.e., all
-devices) will elicit a reply from each device in the daisy-chain. The second
-byte is either the number of the command that the device just executed or 255
-(0xFF) if an error occurs (see Error (Cmd 255) for more information on
-errors).
-
-If desired, byte 6 can be repurposed as a message ID (in place of a byte of
-data). See Message ID Mode for more information.
-"""
-
 import serial
 import struct
 
@@ -119,6 +59,20 @@ class Stage:
         return struct.unpack("l", msg)
 
     def return_status(self):
+        """
+        0 - idle, not currently executing any instructions
+        1 - executing a home instruction
+        10 - executing a manual move in Velocity Mode (i.e. the manual control knob is turned)
+        11 - executing a manual move in Displacement Mode (i.e. the manual control knob is turned)
+        13 - device has stalled and stopped or been displaced while stationary (FW 6.07 and up only)
+        18 - executing a move to stored position instruction
+        20 - executing a move absolute instruction
+        21 - executing a move relative instruction
+        22 - executing a move at constant speed instruction
+        23 - executing a stop instruction (i.e. decelerating)
+        65 - device is parked (FW 6.02 and up only. FW 6.01 returns 0 when parked)
+        78 - executing a move index instruction
+        """
         self.send_message(54)
         msg = self.ser.read(6)
         return struct.unpack("2Bl", msg)
