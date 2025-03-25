@@ -90,6 +90,11 @@ class SpectrometerTab:
 
     def connect_push_buttons_signals_slots(self):
         self.ui.pb_initialize_hardware.clicked.connect(self.initialize_hardware)
+        self.ui.pb_step_back.clicked.connect(self.slot_pb_step_back)
+        self.ui.pb_step_forward.clicked.connect(self.slot_pb_step_forward)
+        self.ui.pb_home.clicked.connect(self.slot_pb_home)
+        self.ui.pb_absolute_move.clicked.connect(self.slot_pb_absolute_move)
+        self.ui.pb_set_t0.clicked.connect(self.slot_pb_set_t0)
 
     # -------- relative move --------------------------------------------------
     @property
@@ -155,8 +160,53 @@ class SpectrometerTab:
         else:
             self.ui.le_error.setText("no hardware initialized")
 
-    def get_stage_status(self):
-        return self.stage.return_status()
+    def slot_pb_absolute_move(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        x = self.ui.le_target_pos_um.text()
+        if x == "":
+            self.ui.le_error.setText("where to?")
+            return
+
+        x = float(x)
+        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        self.stage.move_absolute(x_encoder)
+
+    def slot_pb_step_back(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        x = self.ui.le_step_um.text()
+        if x == "":
+            self.ui.le_error.setText("where to?")
+            return
+
+        x = float(x)
+        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        self.stage.move_relative(-x_encoder)
+
+    def slot_pb_step_forward(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        x = self.ui.le_step_um.text()
+        if x == "":
+            self.ui.le_error.setText("where to?")
+            return
+
+        x = float(x)
+        x_encoder = x * 1000 / self.stage._max_range * self.stage._max_pos
+        self.stage.move_relative(x_encoder)
+
+    def slot_pb_set_t0(self):
+        x_encoder = self.stage.return_current_position()
+        x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
+        self.T0_um = x
+        self.slot_le_target_pos_fs()
 
 
 if __name__ == "__main__":
