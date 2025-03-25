@@ -94,6 +94,8 @@ class Stage:
         msg = self.ser.read(6)
         command_number = msg[1]
         msg_received = msg[2:]
+
+        assert command_number != 255, "error occured"
         return command_number, msg_received
 
     def home(self):
