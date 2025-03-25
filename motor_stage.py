@@ -64,7 +64,7 @@ import struct
 
 class Stage:
     def __init__(self, port):
-        self.ser = serial.Serial(port=port)
+        self.ser = serial.Serial(port=port, timeout=5)
 
         self._max_pos = 1066667
         self._max_range = 50.8
