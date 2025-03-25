@@ -20,6 +20,9 @@ class MainWindow(QMainWindow):
 
         self.tab_spectrometer = SpectrometerTab(self.ui)
 
+    def closeEvent(self):
+        print("I closed")
+
 
 class SpectrometerTab:
     def __init__(self, ui):
