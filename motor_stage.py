@@ -117,3 +117,8 @@ class Stage:
         self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
+
+    def return_status(self):
+        self.send_message(54)
+        msg = self.ser.read(6)
+        return struct.unpack("2Bl", msg)
