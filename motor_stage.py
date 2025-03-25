@@ -88,8 +88,30 @@ class Stage:
     def home(self):
         self.send_message(1)
 
-    def get_position(self):
+    def move_absolute(self, pos):
+        self.send_message(20, pos)
+
+    def move_relative(self, step):
+        self.send_message(21, step)
+
+    def move_at_constant_speed(self, vel):
+        self.send_message(22, vel)
+
+    def stop(self):
+        self.send_message(23)
+
+    def return_current_position(self):
         self.send_message(60)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
+
+    def return_encoder_count(self):
+        self.send_message(82)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
+
+    def return_encoder_position(self):
+        self.send_message(89)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
