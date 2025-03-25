@@ -203,7 +203,7 @@ class SpectrometerTab:
         self.stage.move_relative(x_encoder)
 
     def slot_pb_set_t0(self):
-        x_encoder = self.stage.return_current_position()
+        (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range * 1000
         self.T0_um = x
         self.slot_le_target_pos_fs()
