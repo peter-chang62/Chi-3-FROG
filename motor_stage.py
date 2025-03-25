@@ -93,7 +93,15 @@ class Stage:
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
-    def get_device_id(self):
-        self.send_message(50)
+    def return_status(self):
+        """
+        0   The device is idle and is not performing any motion.
+        65  The device is parked.
+        90  The driver is disabled. The device cannot move.
+        93  The peripheral is inactive. For more information about activating
+            peripherals, see Appendix C: Configuring and Activating Peripherals.
+        99  The device is performing a motion.
+        """
+        self.send_mesage(54)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
