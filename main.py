@@ -33,12 +33,16 @@ class SpectrometerTab:
     def initialize_hardware(self):
         try:
             self.spectrometer = StellarnetBlueWave()
-            self.stage = ZaberStage(self.ui.le_stage_com_port.text())
-            self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))
             self.spectrometer.reset()
+        try:
+            self.stage = ZaberStage(self.ui.le_stage_com_port.text())
+        except Exception as e:
+            self.ui.le_error.setText(str(e))
             self.stage.ser.close()
+
+        self.ui.le_error.setText("success")
 
     def set_validators(self):
         ui = self.ui
