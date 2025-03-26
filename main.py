@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from qt_designer.form import Ui_MainWindow
-from spectrometer_tab import SpectrometerTab
+from tab_spectrometer import SpectrometerTab
 
 fs = 1e-15
 um = 1e-6
