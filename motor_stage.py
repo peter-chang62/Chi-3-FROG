@@ -8,12 +8,10 @@ def _autoconnect(func):
     def wrapper(self, *args, **kwargs):
         if self.autoconnect and not self.connected:
             try:
-                print("opening port")
                 self.open_port()
                 result = func(self, *args, **kwargs)
                 return result
             finally:
-                print("closing port")
                 self.close_port()
         else:
             result = func(self, *args, **kwargs)
