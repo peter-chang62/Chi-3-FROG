@@ -189,7 +189,8 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy")
+            # self.ui.le_error.setText("stage is busy")
+            self.stage.stop()
             return
 
         self.stage.home()
@@ -201,7 +202,8 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy")
+            # self.ui.le_error.setText("stage is busy")
+            self.stage.stop()
             return
 
         x = self.ui.le_target_pos_um.text()
@@ -221,7 +223,8 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy")
+            # self.ui.le_error.setText("stage is busy")
+            self.stage.stop()
             return
 
         x = self.ui.le_step_um.text()
@@ -241,7 +244,8 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy")
+            # self.ui.le_error.setText("stage is busy")
+            self.stage.stop()
             return
 
         x = self.ui.le_step_um.text()
