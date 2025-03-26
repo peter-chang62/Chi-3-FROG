@@ -54,11 +54,8 @@ class SpectrometerTab:
         # successfuly fetched spectrometer
         # now fetch the stage
         try:
-            self.port = self.ui.le_stage_com_port.text()
-            self.stage = ZaberStage(
-                self.port,
-                autoconnect=True,
-            )
+            port = self.ui.le_stage_com_port.text()
+            self.stage = ZaberStage(port, autoconnect=True)
             self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))
@@ -73,7 +70,7 @@ class SpectrometerTab:
 
     def create_threads_workers(self):
         self.thread_stage = QtCore.QThread()
-        self.worker_stage = WorkerMonitorStagePos(100, self.port)
+        self.worker_stage = WorkerMonitorStagePos(100, self.stage)
         self.worker_stage.moveToThread(self.thread_stage)
         self.thread_stage.started.connect(self.worker_stage.start_timer)
         self.worker_stage.progress.connect(self.slot_lcd_current_pos)
@@ -289,16 +286,16 @@ class WorkerMonitorStagePos(QtCore.QObject):
     progress = QtCore.pyqtSignal(float)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, interval, port):
+    def __init__(self, interval, stage):
         super().__init__()
 
-        self.port = port
+        stage: ZaberStage
+        self.stage = stage
         self.interval = interval
         self.x_encoder_previous = None
 
     def start_timer(self):
         # timer must be created and started by the same thread!
-        self.stage = ZaberStage(self.port, autoconnect=True)
         self.timer = QtCore.QTimer(interval=self.interval)
         self.timer.timeout.connect(self.slot_timeout)
         self.timer.start()
