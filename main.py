@@ -285,8 +285,8 @@ class WorkerMonitorStagePos(QtCore.QObject):
     def stop_timer(self):
         if self.timer.isActive():
             self.timer.stop()
-            self.finished.emit()
             self.stage.close_port()
+            self.finished.emit()
 
 
 if __name__ == "__main__":
