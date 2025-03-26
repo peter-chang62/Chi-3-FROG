@@ -87,6 +87,8 @@ class SpectrometerTab:
 
     def closeEvent(self, event):
         if self._initialized_hardware:
+            if self.thread_spec.isRunning():
+                self.event_stop_spec.set()
             self.spectrometer.reset()
 
     def set_validators(self):
