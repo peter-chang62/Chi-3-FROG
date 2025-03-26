@@ -383,7 +383,7 @@ class WorkerSpectrometerUpdate(QtCore.QObject):
 
     def slot_timeout(self):
         self.progress.emit(np.asarray(self.spec.spectrum))
-        if self.stop_event.is_set:
+        if self.stop_event.is_set():
             self.stop_timer()
 
     def stop_timer(self):
