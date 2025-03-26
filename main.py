@@ -166,7 +166,7 @@ class SpectrometerTab:
     def slot_le_target_pos_um(self):
         self.target_pos_um = float(self.ui.le_target_pos_um.text())
 
-    # ------ stage motion -----------------------------------------------------
+    # ------ stage command slots ----------------------------------------------
 
     def slot_pb_home(self):
         if self.thread_stage.isRunning():
@@ -229,6 +229,8 @@ class SpectrometerTab:
 
         self.thread_stage.start()
 
+    # --------- stage read slots ----------------------------------------------
+
     def slot_pb_set_t0(self):
         (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range
@@ -238,11 +240,12 @@ class SpectrometerTab:
         self.slot_lcd_current_pos(x)
         self.slot_le_target_pos_fs()
 
+    # ----- update slots with no hardware read or write -----------------------
     def slot_lcd_current_pos(self, pos_um):
+        t_fs = np.round((2 * (pos_um - self.T0_um) * um / c) / fs, 3)
+
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
-        self.ui.lcd_current_pos_fs.display(
-            np.round((2 * (pos_um - self.T0_um) * um / c) / fs, 3)
-        )
+        self.ui.lcd_current_pos_fs.display(t_fs)
 
 
 class WorkerMonitorStagePos(QtCore.QObject):
@@ -258,7 +261,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
 
     def start_timer(self):
         # timer must be created and started by the same thread!
-        self.stage = ZaberStage(self.port, autoconnect=False)
+        self.stage = ZaberStage(self.port, autoconnect=True)
         self.timer = QtCore.QTimer(interval=self.interval)
         self.timer.timeout.connect(self.slot_timeout)
         self.timer.start()
