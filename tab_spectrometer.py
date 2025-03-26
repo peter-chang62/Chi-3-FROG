@@ -191,7 +191,6 @@ class SpectrometerTab:
 
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
-            self.stage.stop()
             self.event_stop_stage.set()
             return
 
@@ -205,7 +204,6 @@ class SpectrometerTab:
 
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
-            self.stage.stop()
             self.event_stop_stage.set()
             return
 
@@ -227,7 +225,6 @@ class SpectrometerTab:
 
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
-            self.stage.stop()
             self.event_stop_stage.set()
             return
 
@@ -249,7 +246,6 @@ class SpectrometerTab:
 
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
-            self.stage.stop()
             self.event_stop_stage.set()
             return
 
@@ -362,6 +358,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
                 self.stop_timer()  # if indeed idle then stop the timer
 
         if self.stop_event.is_set():
+            self.stage.stop()
             self.stop_timer()
 
         self.x_encoder_previous = x_encoder
