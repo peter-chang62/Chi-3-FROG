@@ -74,7 +74,7 @@ class SpectrometerTab:
         self.worker_stage = WorkerMonitorStagePos(100, self.port)
         self.worker_stage.moveToThread(self.thread_stage)
         self.thread_stage.started.connect(self.worker_stage.start_timer)
-        self.worker_stage.progress.connect(self.slot_lcd_current_pos_um)
+        self.worker_stage.progress.connect(self.slot_lcd_current_pos)
         self.worker_stage.finished.connect(self.thread_stage.quit)
 
     def closeEvent(self, event):
@@ -235,16 +235,13 @@ class SpectrometerTab:
         x *= mm / um  # convert to um
         self.T0_um = x
 
-        self.slot_lcd_current_pos_um()
+        self.slot_lcd_current_pos(x)
         self.slot_le_target_pos_fs()
 
-    def slot_lcd_current_pos_um(self):
-        (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range
-        x *= mm / um  # convert to um
-        self.ui.lcd_current_pos_um.display(np.round(x, 3))
+    def slot_lcd_current_pos(self, pos_um):
+        self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(
-            np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
+            np.round((2 * (pos_um - self.T0_um) * um / c) / fs, 3)
         )
 
 
