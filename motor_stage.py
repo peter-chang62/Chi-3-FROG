@@ -1,6 +1,10 @@
 import serial
 import struct
 
+# try using PyQt5's serial
+from PyQt5.QtSerialPort import QSerialPort
+from PyQt5.QtCore import QIODevice
+
 
 class ZaberStage:
     """
@@ -13,7 +17,10 @@ class ZaberStage:
 
     def __init__(self, port):
         # serial port with 1 minute timeout
-        self.ser = serial.Serial(port=port, timeout=60)
+        # self.ser = serial.Serial(port=port, timeout=60)
+        self.ser = QSerialPort()
+        self.ser.setPortName(port)
+        self.ser.open(QIODevice.ReadWrite)
 
         self._max_pos = 1066667
         self._max_range = 50.8
