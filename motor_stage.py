@@ -1,8 +1,10 @@
 import serial
 import struct
+from functools import wraps
 
 
 def _auto_connect(func):
+    @wraps(func)
     def wrapper(self, *args, **kwargs):
         self: ZaberStage
         try:
