@@ -104,6 +104,9 @@ class SpectrometerTab:
         self.ui.le_target_pos_fs.editingFinished.connect(self.slot_le_target_pos_fs)
         self.ui.le_target_pos_um.editingFinished.connect(self.slot_le_target_pos_um)
 
+        self.slot_le_step_fs()
+        self.slot_le_target_pos_fs()
+
     def connect_push_buttons_signals_slots(self):
         self.ui.pb_initialize_hardware.clicked.connect(self.initialize_hardware)
         self.ui.pb_step_back.clicked.connect(self.slot_pb_step_back)
