@@ -16,7 +16,7 @@ def _autoconnect(func):
         else:
             result = func(self, *args, **kwargs)
             return result
-        return wrapper
+    return wrapper
 
 
 class ZaberStage:
