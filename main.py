@@ -69,6 +69,8 @@ class SpectrometerTab:
         self._initialized_hardware = True
         self.create_threads_workers()
 
+        self.read_and_update_current_stage_position()
+
     def create_threads_workers(self):
         self.thread_stage = QtCore.QThread()
         self.worker_stage = WorkerMonitorStagePos(100, self.port)
@@ -174,21 +176,24 @@ class SpectrometerTab:
 
     # ------ stage command slots ----------------------------------------------
     def slot_pb_home(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
         if self.thread_stage.isRunning():
             self.ui.le_error.setText("stage is busy")
             return
 
-        if self._initialized_hardware:
-            self.stage.home()
-        else:
-            self.ui.le_error.setText("no hardware initialized")
-            return
-
+        self.stage.home()
         self.thread_stage.start()
 
     def slot_pb_absolute_move(self):
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
+            return
+
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
             return
 
         x = self.ui.le_target_pos_um.text()
@@ -207,6 +212,10 @@ class SpectrometerTab:
             self.ui.le_error.setText("no hardware initialized")
             return
 
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         x = self.ui.le_step_um.text()
         if x == "":
             self.ui.le_error.setText("where to?")
@@ -223,6 +232,10 @@ class SpectrometerTab:
             self.ui.le_error.setText("no hardware initialized")
             return
 
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         x = self.ui.le_step_um.text()
         if x == "":
             self.ui.le_error.setText("where to?")
@@ -235,7 +248,31 @@ class SpectrometerTab:
         self.thread_stage.start()
 
     # --------- stage read slots ----------------------------------------------
+    def read_and_update_current_stage_position(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy, can't read position")
+            return
+
+        (x_encoder,) = self.stage.return_current_position()
+        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x *= mm / um  # convert to um
+
+        self.slot_lcd_current_pos(x)
+        self.slot_le_target_pos_fs()
+
     def slot_pb_set_t0(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy, can't read position")
+            return
+
         (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range
         x *= mm / um  # convert to um
