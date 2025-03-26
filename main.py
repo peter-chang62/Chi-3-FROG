@@ -1,16 +1,24 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from qt_designer.form import Ui_MainWindow
-
-from PyQt5 import QtWidgets, QtCore, QtGui
+import threading
+from PyQt5 import QtCore, QtGui
 from scipy.constants import c
 import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
+import pyqtgraph as pg
 
 fs = 1e-15
 um = 1e-6
 mm = 1e-3
+
+
+def create_curve(color="b", width=2, x=None, y=None):
+    curve = pg.PlotDataItem(pen=pg.mkPen(color=color, width=width))
+    if (x is not None) and (y is not None):
+        curve.setData(x, y)
+    return curve
 
 
 class MainWindow(QMainWindow):
@@ -36,6 +44,9 @@ class SpectrometerTab:
         self.connect_push_buttons_signals_slots()
 
         self._initialized_hardware = False
+
+        self.curve_spectrum = create_curve(color="w")
+        self.ui.gv_spectrum.addItem(self.curve_spectrum)
 
     def initialize_hardware(self):
         if self._initialized_hardware:
@@ -76,6 +87,18 @@ class SpectrometerTab:
         self.worker_stage.progress.connect(self.slot_lcd_current_pos)
         self.worker_stage.finished.connect(self.thread_stage.quit)
 
+        self.thread_spec = QtCore.QThread()
+        self.event_stop_spec = threading.Event()
+        self.worker_spec = WorkerSpectrometerUpdate(
+            100,
+            self.spectrometer,
+            self.event_stop_spec,
+        )
+        self.worker_spec.moveToThread(self.thread_spec)
+        self.thread_spec.started.connect(self.worker_spec.start_timer)
+        self.worker_spec.progress.connect(self.update_spectrum_plot)
+        self.worker_spec.finished.connect(self.thread_spec.quit)
+
     def closeEvent(self, event):
         if self._initialized_hardware:
             self.spectrometer.reset()
@@ -87,10 +110,6 @@ class SpectrometerTab:
             ui.le_step_um,
             ui.le_target_pos_fs,
             ui.le_target_pos_um,
-            ui.le_ymax,
-            ui.le_ymin,
-            ui.le_xmax,
-            ui.le_xmin,
         ]
         [i.setValidator(QtGui.QDoubleValidator()) for i in line_edits]
 
@@ -110,6 +129,7 @@ class SpectrometerTab:
         self.ui.pb_home.clicked.connect(self.slot_pb_home)
         self.ui.pb_absolute_move.clicked.connect(self.slot_pb_absolute_move)
         self.ui.pb_set_t0.clicked.connect(self.slot_pb_set_t0)
+        self.ui.pb_spectrometer.clicked.connect(self.slot_pb_spectrometer)
 
     # -------- line edits for relative move -----------------------------------
     @property
@@ -280,6 +300,25 @@ class SpectrometerTab:
         self.slot_lcd_current_pos(x)
         self.slot_le_target_pos_fs()
 
+    # ------------ spectrometer -----------------------------------------------
+    def slot_pb_spectrometer(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        if not self.event_stop_spec.is_set():
+            if not self.thread_spec.isRunning:
+                self.thread_spec.start()
+            else:
+                self.event_stop_spec.set()
+
+        else:
+            self.ui.le_error.setText("wait for spectrometer to stop")
+            return
+
+    def update_spectrum_plot(self, s):
+        self.curve_spectrum.setData(x=self.spectrometer.wl, y=s)
+
 
 class WorkerMonitorStagePos(QtCore.QObject):
     progress = QtCore.pyqtSignal(float)
@@ -322,6 +361,36 @@ class WorkerMonitorStagePos(QtCore.QObject):
         if self.timer.isActive():
             self.timer.stop()
             self.finished.emit()
+
+
+class WorkerSpectrometerUpdate(QtCore.QObject):
+    progress = QtCore.pyqtSignal(np.ndarray)
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, interval, spectrometer, stop_event):
+        super().__init__()
+        spectrometer: StellarnetBlueWave
+        self.spec = spectrometer
+        self.interval = interval
+        stop_event = threading.Event
+        self.stop_event = stop_event
+
+    def start_timer(self):
+        # timer must be created and started by the same thread!
+        self.timer = QtCore.QTimer(interval=self.interval)
+        self.timer.timeout.connect(self.slot_timeout)
+        self.timer.start()
+
+    def slot_timeout(self):
+        self.progress.emit(np.asarray(self.spec.spectrum))
+        if self.stop_event.is_set:
+            self.stop_timer()
+
+    def stop_timer(self):
+        if self.timer.isActive():
+            self.timer.stop()
+            self.finished.emit()
+            self.stop_event.clear()
 
 
 if __name__ == "__main__":
