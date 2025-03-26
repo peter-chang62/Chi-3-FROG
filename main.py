@@ -372,7 +372,7 @@ class WorkerSpectrometerUpdate(QtCore.QObject):
         spectrometer: StellarnetBlueWave
         self.spec = spectrometer
         self.interval = interval
-        stop_event = threading.Event
+        stop_event: threading.Event
         self.stop_event = stop_event
 
     def start_timer(self):
