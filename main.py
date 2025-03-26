@@ -256,13 +256,13 @@ class WorkerMonitorStagePos(QtCore.QObject):
     def __init__(self, interval, port):
         super().__init__()
 
-        stage: ZaberStage
-        self.stage = ZaberStage(port, autoconnect=False)
+        self.port = port
         self.interval = interval
         self.x_encoder_previous = None
 
     def start_timer(self):
         # timer must be created and started by the same thread!
+        self.stage = ZaberStage(self.port, autoconnect=False)
         self.timer = QtCore.QTimer(interval=self.interval)
         self.timer.timeout.connect(self.slot_timeout)
         self.timer.start()
