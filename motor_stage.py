@@ -2,6 +2,9 @@ import serial
 import struct
 from functools import wraps
 
+from PyQt5.QtSerialPort import QSerialPort
+from PyQt5.QtCore import QIODevice
+
 
 def _autoconnect(func):
     @wraps(func)
@@ -31,9 +34,12 @@ class ZaberStage:
 
     def __init__(self, port, autoconnect=True):
         # serial port with 1 minute timeout
-        self.ser = serial.Serial()
-        self.ser.port = port
-        self.ser.timeout = 60
+        # self.ser = serial.Serial()
+        # self.ser.port = port
+        # self.ser.timeout = 60
+
+        self.ser = QSerialPort()
+        self.ser.setPortName(port)
 
         self._max_pos = 1066667
         self._max_range = 50.8
@@ -51,14 +57,20 @@ class ZaberStage:
             self.open_port()
 
     def open_port(self):
-        if not self.ser.is_open:
-            self.ser.open()
-            self.ser.reset_input_buffer()
-            self.ser.reset_output_buffer()
+        # if not self.ser.is_open:
+        if not self.ser.isOpen():
+            # self.ser.open()
+            # self.ser.reset_input_buffer()
+            # self.ser.reset_output_buffer()
+
+            self.ser.open(QIODevice.ReadWrite)
+            self.ser.clear(QSerialPort.AllDirections)
+
             self.connected = True
 
     def close_port(self):
-        if self.ser.is_open:
+        # if self.ser.is_open:
+        if self.ser.isOpen():
             self.ser.close()
             self.connected = False
 
