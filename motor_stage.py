@@ -1,22 +1,5 @@
 import serial
-from PyQt5.QtSerialPort import QSerialPort
-from PyQt5.QtCore import QIODevice, QByteArray
 import struct
-from functools import wraps
-
-
-def _auto_connect(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self: ZaberStage
-        try:
-            self.open_port()
-            result = func(self, *args, **kwargs)
-            return result
-        finally:
-            self.close_port()
-
-    return wrapper
 
 
 class ZaberStage:
@@ -30,9 +13,7 @@ class ZaberStage:
 
     def __init__(self, port):
         # serial port with 1 minute timeout
-        # self.ser = serial.Serial(port=port, timeout=60)
-        self.ser = QSerialPort()
-        self.ser.setPortName(port)
+        self.ser = serial.Serial(port=port, timeout=60)
 
         self._max_pos = 1066667
         self._max_range = 50.8
@@ -44,19 +25,6 @@ class ZaberStage:
         self._cmd_stop = 23
         self._cmd_return_current_position = 60
 
-    def close_port(self):
-        """Closes the serial port from read/write access"""
-        if self.ser.isOpen():
-            self.ser.close()
-
-    def open_port(self):
-        """Opens the serial port for read/write access"""
-        if not self.ser.isOpen():
-            self.ser.open(QIODevice.ReadWrite)
-            self.ser.clear(QSerialPort.AllDirections)
-            # self.ser.reset_input_buffer()
-            # self.ser.reset_output_buffer()
-
     @property
     def device(self):
         # assume only one zaber stage is connected (no daisy chain)
@@ -64,7 +32,7 @@ class ZaberStage:
 
     def send_message(self, command_number, data=0):
         msg = struct.pack("<2Bl", self.device, command_number, data)
-        self.ser.write(QByteArray(msg))
+        self.ser.write(msg)
 
     def receive_message(self):
         msg = self.ser.read(6)
@@ -74,33 +42,26 @@ class ZaberStage:
         assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
 
-    @_auto_connect
     def home(self):
         self.send_message(self._cmd_home)
 
-    @_auto_connect
     def move_absolute(self, pos):
         self.send_message(self._cmd_move_absolute, pos)
 
-    @_auto_connect
     def move_relative(self, step):
         self.send_message(self._cmd_move_relative, step)
 
-    @_auto_connect
     def move_at_constant_speed(self, vel):
         self.send_message(self._cmd_move_at_constant_speed, vel)
 
-    @_auto_connect
     def stop(self):
         self.send_message(self._cmd_stop)
 
-    @_auto_connect
     def return_current_position(self):
         self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
-    @_auto_connect
     def return_status(self):
         """
         0 - idle, not currently executing any instructions
