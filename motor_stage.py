@@ -2,6 +2,19 @@ import serial
 import struct
 
 
+def _auto_connect(func):
+    def wrapper(self, *args, **kwargs):
+        self: ZaberStage
+        try:
+            self.open_port()
+            result = func(self, *args, **kwargs)
+            return result
+        finally:
+            self.close_port()
+
+    return wrapper
+
+
 class ZaberStage:
     """
     Please see this documentation:
@@ -44,41 +57,43 @@ class ZaberStage:
 
     def send_message(self, command_number, data=0):
         msg = struct.pack("<2Bl", self.device, command_number, data)
-
-        self.open_port()
         self.ser.write(msg)
-        self.close_port()
 
     def receive_message(self):
-        self.open_port()
         msg = self.ser.read(6)
-        self.close_port()
-
         command_number = msg[1]
         msg_received = msg[2:]
+
         assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
 
+    @_auto_connect
     def home(self):
         self.send_message(self._cmd_home)
 
+    @_auto_connect
     def move_absolute(self, pos):
         self.send_message(self._cmd_move_absolute, pos)
 
+    @_auto_connect
     def move_relative(self, step):
         self.send_message(self._cmd_move_relative, step)
 
+    @_auto_connect
     def move_at_constant_speed(self, vel):
         self.send_message(self._cmd_move_at_constant_speed, vel)
 
+    @_auto_connect
     def stop(self):
         self.send_message(self._cmd_stop)
 
+    @_auto_connect
     def return_current_position(self):
         self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
+    @_auto_connect
     def return_status(self):
         """
         0 - idle, not currently executing any instructions
