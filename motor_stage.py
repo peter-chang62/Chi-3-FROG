@@ -1,8 +1,10 @@
 import serial
 import struct
+from functools import wraps
 
 
 def _autoconnect(func):
+    @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.connected:
             try:
