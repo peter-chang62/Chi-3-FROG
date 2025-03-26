@@ -190,8 +190,10 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            # self.ui.le_error.setText("stage is busy")
-            self.event_stop_stage.set()
+            if not self.event_stop_stage.is_set():
+                self.event_stop_stage.set()
+            else:
+                self.ui.le_error.setText("wait for stage to stop")
             return
 
         self.stage.home()
@@ -203,8 +205,10 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            # self.ui.le_error.setText("stage is busy")
-            self.event_stop_stage.set()
+            if not self.event_stop_stage.is_set():
+                self.event_stop_stage.set()
+            else:
+                self.ui.le_error.setText("wait for stage to stop")
             return
 
         x = self.ui.le_target_pos_um.text()
@@ -224,8 +228,10 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            # self.ui.le_error.setText("stage is busy")
-            self.event_stop_stage.set()
+            if not self.event_stop_stage.is_set():
+                self.event_stop_stage.set()
+            else:
+                self.ui.le_error.setText("wait for stage to stop")
             return
 
         x = self.ui.le_step_um.text()
@@ -245,8 +251,10 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
-            # self.ui.le_error.setText("stage is busy")
-            self.event_stop_stage.set()
+            if not self.event_stop_stage.is_set():
+                self.event_stop_stage.set()
+            else:
+                self.ui.le_error.setText("wait for stage to stop")
             return
 
         x = self.ui.le_step_um.text()
