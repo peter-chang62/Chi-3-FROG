@@ -25,6 +25,18 @@ class ZaberStage:
         self._cmd_stop = 23
         self._cmd_return_current_position = 60
 
+    def open_port(self):
+        """Opens the serial port for read/write access"""
+        if not self.ser.is_open:
+            self.ser.open()
+            self.ser.reset_input_buffer()
+            self.ser.reset_output_buffer()
+
+    def close_port(self):
+        """Closes the serial port from read/write access"""
+        if self.ser.is_open:
+            self.ser.close()
+
     @property
     def device(self):
         # assume only one zaber stage is connected (no daisy chain)
@@ -32,13 +44,18 @@ class ZaberStage:
 
     def send_message(self, command_number, data=0):
         msg = struct.pack("<2Bl", self.device, command_number, data)
+
+        self.open_port()
         self.ser.write(msg)
+        self.close_port()
 
     def receive_message(self):
+        self.open_port()
         msg = self.ser.read(6)
+        self.close_port()
+
         command_number = msg[1]
         msg_received = msg[2:]
-
         assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
 

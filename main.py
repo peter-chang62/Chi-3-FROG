@@ -179,6 +179,10 @@ class SpectrometerTab:
         self.thread_stage.start()
 
     def slot_pb_absolute_move(self):
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return
@@ -195,6 +199,10 @@ class SpectrometerTab:
         self.thread_stage.start()
 
     def slot_pb_step_back(self):
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return
@@ -211,6 +219,10 @@ class SpectrometerTab:
         self.thread_stage.start()
 
     def slot_pb_step_forward(self):
+        if self.thread_stage.isRunning():
+            self.ui.le_error.setText("stage is busy")
+            return
+
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return
