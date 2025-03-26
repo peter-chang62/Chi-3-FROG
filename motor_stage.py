@@ -12,12 +12,11 @@ def _auto_connect(func):
         if not self.connected:
             try:
                 if not self.ser.isOpen():
-                    self.ser.open(QIODevice.ReadWrite)
-                    self.ser.clear(QSerialPort.AllDirections)
+                    self.open_port
                     result = func(self, *args, **kwargs)
                     return result
             finally:
-                self.ser.close()
+                self.close_port()
         else:
             result = func(self, *args, **kwargs)
             return result
