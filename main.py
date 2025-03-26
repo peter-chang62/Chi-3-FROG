@@ -54,7 +54,11 @@ class SpectrometerTab:
         # successfuly fetched spectrometer
         # now fetch the stage
         try:
-            self.stage = ZaberStage(self.ui.le_stage_com_port.text())
+            self.port = self.ui.le_stage_com_port.text()
+            self.stage = ZaberStage(
+                self.port,
+                autoconnect=True,
+            )
             self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))
@@ -67,7 +71,7 @@ class SpectrometerTab:
 
     def create_threads_workers(self):
         self.thread_stage = QtCore.QThread()
-        self.worker_stage = WorkerMonitorStagePos(100, self.stage)
+        self.worker_stage = WorkerMonitorStagePos(100, self.port)
         self.worker_stage.moveToThread(self.thread_stage)
         self.thread_stage.started.connect(self.worker_stage.start_timer)
         self.worker_stage.progress.connect(self.slot_lcd_current_pos_um)
@@ -249,11 +253,11 @@ class WorkerMonitorStagePos(QtCore.QObject):
     progress = QtCore.pyqtSignal(float)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, interval, stage):
+    def __init__(self, interval, port):
         super().__init__()
 
         stage: ZaberStage
-        self.stage = stage
+        self.stage = ZaberStage(port, autoconnect=False)
         self.interval = interval
         self.x_encoder_previous = None
 
@@ -286,6 +290,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
         if self.timer.isActive():
             self.timer.stop()
             self.finished.emit()
+            self.stage.close_port()
 
 
 if __name__ == "__main__":
