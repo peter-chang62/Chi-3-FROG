@@ -1,6 +1,6 @@
 import serial
 from PyQt5.QtSerialPort import QSerialPort
-from PyQt5.QtCore import QIODevice
+from PyQt5.QtCore import QIODevice, QByteArray
 import struct
 from functools import wraps
 
@@ -44,18 +44,18 @@ class ZaberStage:
         self._cmd_stop = 23
         self._cmd_return_current_position = 60
 
+    def close_port(self):
+        """Closes the serial port from read/write access"""
+        if self.ser.isOpen():
+            self.ser.close()
+
     def open_port(self):
         """Opens the serial port for read/write access"""
-        if not self.ser.is_open:
+        if not self.ser.isOpen():
             self.ser.open(QIODevice.ReadWrite)
             self.ser.clear(QSerialPort.AllDirections)
             # self.ser.reset_input_buffer()
             # self.ser.reset_output_buffer()
-
-    def close_port(self):
-        """Closes the serial port from read/write access"""
-        if self.ser.is_open:
-            self.ser.close()
 
     @property
     def device(self):
@@ -64,7 +64,7 @@ class ZaberStage:
 
     def send_message(self, command_number, data=0):
         msg = struct.pack("<2Bl", self.device, command_number, data)
-        self.ser.write(msg)
+        self.ser.write(QByteArray(msg))
 
     def receive_message(self):
         msg = self.ser.read(6)
