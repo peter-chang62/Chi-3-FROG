@@ -79,7 +79,6 @@ class SpectrometerTab:
     def closeEvent(self, event):
         if self._initialized_hardware:
             self.spectrometer.reset()
-            self.stage.ser.close()
 
     def set_validators(self):
         ui = self.ui
@@ -323,7 +322,6 @@ class WorkerMonitorStagePos(QtCore.QObject):
         if self.timer.isActive():
             self.timer.stop()
             self.finished.emit()
-            self.stage.close_port()
 
 
 if __name__ == "__main__":
