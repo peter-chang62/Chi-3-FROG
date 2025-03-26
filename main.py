@@ -307,7 +307,7 @@ class SpectrometerTab:
             return
 
         if not self.event_stop_spec.is_set():
-            if not self.thread_spec.isRunning:
+            if not self.thread_spec.isRunning():
                 self.thread_spec.start()
             else:
                 self.event_stop_spec.set()
@@ -317,7 +317,7 @@ class SpectrometerTab:
             return
 
     def update_spectrum_plot(self, s):
-        self.curve_spectrum.setData(x=self.spectrometer.wl, y=s)
+        self.curve_spectrum.setData(self.spectrometer.wl, s)
 
 
 class WorkerMonitorStagePos(QtCore.QObject):
