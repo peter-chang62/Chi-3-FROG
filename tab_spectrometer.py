@@ -273,6 +273,10 @@ class SpectrometerTab:
         self.slot_le_target_pos_fs()
 
     def slot_pb_set_t0(self):
+        """
+        same as read_and_update_current_stage_position, but also sets T0_um to
+        the current stage position
+        """
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return
