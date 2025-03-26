@@ -43,6 +43,7 @@ class ZaberStage:
         self._cmd_move_relative = 21
         self._cmd_move_at_constant_speed = 22
         self._cmd_stop = 23
+        self._cmd_return_status = 54
         self._cmd_return_current_position = 60
 
         self.connected = False
@@ -121,6 +122,6 @@ class ZaberStage:
         65 - device is parked (FW 6.02 and up only. FW 6.01 returns 0 when parked)
         78 - executing a move index instruction
         """
-        self.send_message(54)
+        self.send_message(self._cmd_return_status)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
