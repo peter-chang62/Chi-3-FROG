@@ -43,28 +43,21 @@ class ZaberStage:
         return command_number, msg_received
 
     def home(self):
-        self.ser.reset_output_buffer()
         self.send_message(self._cmd_home)
 
     def move_absolute(self, pos):
-        self.ser.reset_output_buffer()
         self.send_message(self._cmd_move_absolute, pos)
 
     def move_relative(self, step):
-        self.ser.reset_output_buffer()
         self.send_message(self._cmd_move_relative, step)
 
     def move_at_constant_speed(self, vel):
-        self.ser.reset_output_buffer()
         self.send_message(self._cmd_move_at_constant_speed, vel)
 
     def stop(self):
-        self.ser.reset_output_buffer()
         self.send_message(self._cmd_stop)
 
     def return_current_position(self):
-        self.ser.reset_output_buffer()
-        self.ser.reset_input_buffer()
         self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
@@ -84,8 +77,6 @@ class ZaberStage:
         65 - device is parked (FW 6.02 and up only. FW 6.01 returns 0 when parked)
         78 - executing a move index instruction
         """
-        self.ser.reset_output_buffer()
-        self.ser.reset_input_buffer()
         self.send_message(54)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
