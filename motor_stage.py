@@ -2,21 +2,16 @@ import serial
 import struct
 from functools import wraps
 
-from PyQt5.QtSerialPort import QSerialPort
-from PyQt5.QtCore import QIODevice, pyqtSignal
-
 
 def _autoconnect(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if self.autoconnect and not self.connected:
             try:
-                print("opening port")
                 self.open_port()
                 result = func(self, *args, **kwargs)
                 return result
             finally:
-                print("closing port")
                 self.close_port()
         else:
             result = func(self, *args, **kwargs)
@@ -34,12 +29,11 @@ class ZaberStage:
     https://www.zaber.com/protocol-manual?protocol=Binary#topic_return_054_status
     """
 
-    current_position_received = pyqtSignal(int)
-    current_status_received = pyqtSignal(int)
-
     def __init__(self, port, autoconnect=True):
-        self.ser = QSerialPort()
-        self.ser.setPortName(port)
+        # serial port with 1 minute timeout
+        self.ser = serial.Serial()
+        self.ser.port = port
+        self.ser.timeout = 60
 
         self._max_pos = 1066667
         self._max_range = 50.8
@@ -49,7 +43,6 @@ class ZaberStage:
         self._cmd_move_relative = 21
         self._cmd_move_at_constant_speed = 22
         self._cmd_stop = 23
-        self._cmd_return_status = 54
         self._cmd_return_current_position = 60
 
         self.connected = False
@@ -58,14 +51,14 @@ class ZaberStage:
             self.open_port()
 
     def open_port(self):
-        if not self.ser.isOpen():
-            self.ser.open(QIODevice.ReadWrite)
-            self.ser.clear(QSerialPort.AllDirections)
-
+        if not self.ser.is_open:
+            self.ser.open()
+            self.ser.reset_input_buffer()
+            self.ser.reset_output_buffer()
             self.connected = True
 
     def close_port(self):
-        if self.ser.isOpen():
+        if self.ser.is_open:
             self.ser.close()
             self.connected = False
 
@@ -79,22 +72,12 @@ class ZaberStage:
         self.ser.write(msg)
 
     def receive_message(self):
-        msg = self.ser.read(6).data()
+        msg = self.ser.read(6)
         command_number = msg[1]
         msg_received = msg[2:]
 
         assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
-
-    def slot_return_current_position(self):
-        if self.ser.bytesAvailable():
-            cmd_num, msg = self.receive_message()
-            self.current_position_received.emit(struct.unpack("l", msg))
-
-    def slot_return_current_status(self):
-        if self.ser.bytesAvailable():
-            cmd_num, msg = self.receive_message()
-            self.current_status_received.emit(struct.unpack("l", msg))
 
     @_autoconnect
     def home(self):
@@ -119,8 +102,8 @@ class ZaberStage:
     @_autoconnect
     def return_current_position(self):
         self.send_message(self._cmd_return_current_position)
-        self.ser.readyRead.disconnect()
-        self.ser.readyRead.connect(self.slot_return_current_position)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)
 
     @_autoconnect
     def return_status(self):
@@ -138,6 +121,6 @@ class ZaberStage:
         65 - device is parked (FW 6.02 and up only. FW 6.01 returns 0 when parked)
         78 - executing a move index instruction
         """
-        self.send_message(self._cmd_return_status)
-        self.ser.readyRead.disconnect()
-        self.ser.readyRead.connect(self.slot_return_current_status)
+        self.send_message(54)
+        cmd_num, msg = self.receive_message()
+        return struct.unpack("l", msg)

@@ -55,11 +55,11 @@ class SpectrometerTab:
         # now fetch the stage
         try:
             self.port = self.ui.le_stage_com_port.text()
-            self.stage = ZaberStage(self.port, autoconnect=True)
+            self.stage = ZaberStage(
+                self.port,
+                autoconnect=True,
+            )
             self.ui.le_error.setText("success")
-
-            self.stage.current_position_received.connect(self.update_t0)
-
         except Exception as e:
             self.ui.le_error.setText(str(e))
             self.stage.ser.close()  # release stage
@@ -236,9 +236,7 @@ class SpectrometerTab:
 
     # --------- stage read slots ----------------------------------------------
     def slot_pb_set_t0(self):
-        self.stage.return_current_position()
-
-    def update_t0(self, x_encoder):
+        (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range
         x *= mm / um  # convert to um
         self.T0_um = x
@@ -259,49 +257,36 @@ class WorkerMonitorStagePos(QtCore.QObject):
         self.x_encoder_previous = None
 
     def start_timer(self):
-        self.stage = ZaberStage(self.port, autoconnect=True)
-        self.stage.current_position_received.connect(self.update_stage_position)
-        self.stage.current_status_received.connect(self.check_stage_idle_status)
-
         # timer must be created and started by the same thread!
-        # self.timer = QtCore.QTimer(interval=self.interval)
-        # self.timer.timeout.connect(self.slot_timeout)
-        # self.timer.start()
+        self.stage = ZaberStage(self.port, autoconnect=True)
+        self.timer = QtCore.QTimer(interval=self.interval)
+        self.timer.timeout.connect(self.slot_timeout)
+        self.timer.start()
 
-        self.slot_timeout()
-
-    def update_stage_position(self, x_encoder):
+    def slot_timeout(self):
+        # get current stage position
+        (x_encoder,) = self.stage.return_current_position()
         x = x_encoder / self.stage._max_pos * self.stage._max_range
         x *= mm / um  # convert to um
         self.progress.emit(x)
 
+        # compare to previous stage position
         if self.x_encoder_previous is None:
             self.x_encoder_previous = x_encoder
             return
 
         if x_encoder == self.x_encoder_previous:
             # check for idle status if it appears the stage is not moving
-            self.stage.return_status()
-        else:
-            self.slot_timeout()
-
+            (status,) = self.stage.return_status()
+            if status == 0:
+                self.stop_timer()  # if indeed idle then stop the timer
         self.x_encoder_previous = x_encoder
 
-    def check_stage_idle_status(self, status_code):
-        if status_code == 0:
-            self.stop_timer()
-        else:
-            self.slot_timeout()
-
-    def slot_timeout(self):
-        # get current stage position
-        self.stage.return_current_position()
-
     def stop_timer(self):
-        # if self.timer.isActive():
-        #     self.timer.stop()
-        self.stage.close_port()
-        self.finished.emit()
+        if self.timer.isActive():
+            self.timer.stop()
+            self.finished.emit()
+            self.stage.close_port()
 
 
 if __name__ == "__main__":
