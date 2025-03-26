@@ -55,7 +55,7 @@ class SpectrometerTab:
         # now fetch the stage
         try:
             port = self.ui.le_stage_com_port.text()
-            self.stage = ZaberStage(port, autoconnect=True)
+            self.stage = ZaberStage(port)
             self.ui.le_error.setText("success")
         except Exception as e:
             self.ui.le_error.setText(str(e))

@@ -6,16 +6,12 @@ from functools import wraps
 def _autoconnect(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        if self.autoconnect and not self.connected:
-            try:
-                self.open_port()
-                result = func(self, *args, **kwargs)
-                return result
-            finally:
-                self.close_port()
-        else:
+        try:
+            self.open_port()
             result = func(self, *args, **kwargs)
             return result
+        finally:
+            self.close_port()
 
     return wrapper
 
@@ -29,7 +25,7 @@ class ZaberStage:
     https://www.zaber.com/protocol-manual?protocol=Binary#topic_return_054_status
     """
 
-    def __init__(self, port, autoconnect=True):
+    def __init__(self, port):
         # serial port with 1 minute timeout
         self.ser = serial.Serial()
         self.ser.port = port
@@ -47,9 +43,6 @@ class ZaberStage:
         self._cmd_return_current_position = 60
 
         self.connected = False
-        self.autoconnect = autoconnect
-        if not self.autoconnect:
-            self.open_port()
 
     def open_port(self):
         if not self.ser.is_open:
