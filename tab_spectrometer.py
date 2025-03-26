@@ -66,19 +66,20 @@ class SpectrometerTab:
         self.read_and_update_current_stage_position()
 
     def create_threads_workers(self):
+        self.event_stop_stage = threading.Event()
         self.thread_stage = QtCore.QThread()
-        self.worker_stage = WorkerMonitorStagePos(100, self.stage)
+        self.worker_stage = WorkerMonitorStagePos(
+            100, self.stage, self.event_stop_stage
+        )
         self.worker_stage.moveToThread(self.thread_stage)
         self.thread_stage.started.connect(self.worker_stage.start_timer)
         self.worker_stage.progress.connect(self.slot_lcd_current_pos)
         self.worker_stage.finished.connect(self.thread_stage.quit)
 
-        self.thread_spec = QtCore.QThread()
         self.event_stop_spec = threading.Event()
+        self.thread_spec = QtCore.QThread()
         self.worker_spec = WorkerSpectrometerUpdate(
-            100,
-            self.spectrometer,
-            self.event_stop_spec,
+            100, self.spectrometer, self.event_stop_spec
         )
         self.worker_spec.moveToThread(self.thread_spec)
         self.thread_spec.started.connect(self.worker_spec.start_timer)
@@ -191,6 +192,7 @@ class SpectrometerTab:
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
             self.stage.stop()
+            self.event_stop_stage.set()
             return
 
         self.stage.home()
@@ -204,6 +206,7 @@ class SpectrometerTab:
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
             self.stage.stop()
+            self.event_stop_stage.set()
             return
 
         x = self.ui.le_target_pos_um.text()
@@ -225,6 +228,7 @@ class SpectrometerTab:
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
             self.stage.stop()
+            self.event_stop_stage.set()
             return
 
         x = self.ui.le_step_um.text()
@@ -246,6 +250,7 @@ class SpectrometerTab:
         if self.thread_stage.isRunning():
             # self.ui.le_error.setText("stage is busy")
             self.stage.stop()
+            self.event_stop_stage.set()
             return
 
         x = self.ui.le_step_um.text()
@@ -321,13 +326,16 @@ class WorkerMonitorStagePos(QtCore.QObject):
     progress = QtCore.pyqtSignal(float)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, interval, stage):
+    def __init__(self, interval, stage, stop_event):
         super().__init__()
 
         stage: ZaberStage
         self.stage = stage
         self.interval = interval
         self.x_encoder_previous = None
+
+        stop_event: threading.Event
+        self.stop_event = stop_event
 
     def start_timer(self):
         # timer must be created and started by the same thread!
@@ -352,11 +360,16 @@ class WorkerMonitorStagePos(QtCore.QObject):
             (status,) = self.stage.return_status()
             if status == 0:
                 self.stop_timer()  # if indeed idle then stop the timer
+
+        if self.stop_event.is_set():
+            self.stop_timer()
+
         self.x_encoder_previous = x_encoder
 
     def stop_timer(self):
         if self.timer.isActive():
             self.timer.stop()
+            self.stop_event.clear()
             self.finished.emit()
 
 
