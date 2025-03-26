@@ -71,6 +71,7 @@ class SpectrometerTab:
         self.worker_stage.moveToThread(self.thread_stage)
         self.thread_stage.started.connect(self.worker_stage.start_timer)
         self.worker_stage.progress.connect(self.slot_lcd_current_pos_um)
+        self.worker_stage.finished.connect(self.slot_lcd_current_pos_um)
         self.worker_stage.finished.connect(self.thread_stage.quit)
 
     def closeEvent(self, event):
@@ -191,6 +192,8 @@ class SpectrometerTab:
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_absolute(int(np.round(x_encoder)))
 
+        self.thread_stage.start()
+
     def slot_pb_step_back(self):
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
@@ -205,6 +208,8 @@ class SpectrometerTab:
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(-x_encoder)))
 
+        self.thread_stage.start()
+
     def slot_pb_step_forward(self):
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
@@ -218,6 +223,8 @@ class SpectrometerTab:
         x = float(x) * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
         self.stage.move_relative(int(np.round(x_encoder)))
+
+        self.thread_stage.start()
 
     def slot_pb_set_t0(self):
         (x_encoder,) = self.stage.return_current_position()
