@@ -2,6 +2,21 @@ import serial
 import struct
 
 
+def _autoconnect(func):
+    def wrapper(self, *args, **kwargs):
+        if not self.connected:
+            try:
+                self.open_port()
+                result = func(self, *args, **kwargs)
+                return result
+            finally:
+                self.close_port()
+        else:
+            result = func(self, *args, **kwargs)
+            return result
+        return wrapper
+
+
 class ZaberStage:
     """
     Please see this documentation:
@@ -13,7 +28,9 @@ class ZaberStage:
 
     def __init__(self, port):
         # serial port with 1 minute timeout
-        self.ser = serial.Serial(port=port, timeout=60)
+        self.ser = serial.Serial()
+        self.ser.port = port
+        self.ser.timeout = 60
 
         self._max_pos = 1066667
         self._max_range = 50.8
@@ -24,6 +41,20 @@ class ZaberStage:
         self._cmd_move_at_constant_speed = 22
         self._cmd_stop = 23
         self._cmd_return_current_position = 60
+
+        self.connected = False
+
+    def open_port(self):
+        if not self.ser.is_open:
+            self.ser.open()
+            self.ser.reset_input_buffer()
+            self.ser.reset_output_buffer()
+            self.connected = True
+
+    def close_port(self):
+        if self.ser.is_open:
+            self.ser.close()
+            self.connected = False
 
     @property
     def device(self):
@@ -42,26 +73,33 @@ class ZaberStage:
         assert command_number != 255, "error occured! perhaps command does not exist?"
         return command_number, msg_received
 
+    @_autoconnect
     def home(self):
         self.send_message(self._cmd_home)
 
+    @_autoconnect
     def move_absolute(self, pos):
         self.send_message(self._cmd_move_absolute, pos)
 
+    @_autoconnect
     def move_relative(self, step):
         self.send_message(self._cmd_move_relative, step)
 
+    @_autoconnect
     def move_at_constant_speed(self, vel):
         self.send_message(self._cmd_move_at_constant_speed, vel)
 
+    @_autoconnect
     def stop(self):
         self.send_message(self._cmd_stop)
 
+    @_autoconnect
     def return_current_position(self):
         self.send_message(self._cmd_return_current_position)
         cmd_num, msg = self.receive_message()
         return struct.unpack("l", msg)
 
+    @_autoconnect
     def return_status(self):
         """
         0 - idle, not currently executing any instructions
