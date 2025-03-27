@@ -198,7 +198,7 @@ class SpectrometerTab:
         self.stage.home()
         self.thread_stage.start()
 
-    def slot_pb_absolute_move(self, hello_world=None):
+    def slot_pb_absolute_move(self, target_pos_encoder=None):
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return
@@ -215,8 +215,11 @@ class SpectrometerTab:
             self.ui.le_error.setText("where to?")
             return
 
-        x = float(x) * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        if target_pos_encoder is None:
+            x = float(x) * um / mm  # convert to mm
+            x_encoder = x / self.stage._max_range * self.stage._max_pos
+        else:
+            x_encoder = target_pos_encoder
         self.stage.move_absolute(int(np.round(x_encoder)))
 
         self.thread_stage.start()
