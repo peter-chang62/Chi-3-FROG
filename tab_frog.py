@@ -29,6 +29,9 @@ class FrogTab:
         self.set_validators()
         self.connect_line_edits_signals_slots()
 
+        self.curve_spectrum = create_curve(color="w")
+        self.ui.gv_autocorr.addItem(self.curve_spectrum)
+
     def closeEvent(self, event):
         pass
 
@@ -56,8 +59,12 @@ class FrogTab:
         self.slot_le_frog_end_fs()
         self.slot_le_frog_step_fs()
 
+    def connect_push_buttons_signals_slots(self):
+        self.ui.pb_frog.clicked.connect(self.slot_pb_frog)
+
     def create_threads_workers(self):
         self.event_stop_frog = threading.Event()
+        self.start_frog_event = threading.Event()
         self.thread_frog = QtCore.QThread()
         self.worker_frog = WorkerFrogStepScan(
             self.spectrometer,
@@ -70,6 +77,7 @@ class FrogTab:
         self.thread_frog.started.connect(self.worker_frog.loop)
         self.worker_frog.progress.connect(self.slot_frog_update)
         self.worker_frog.finished.connect(self.thread_frog.quit)
+        self.tab_spectrometer.worker_stage.finished.connect(self.start_frog)
 
     @property
     def T0_um(self):
@@ -184,14 +192,25 @@ class FrogTab:
 
     # ---------- frog ---------------------------------------------------------
     def slot_pb_frog(self):
-        pass
+        self.tab_spectrometer.slot_pb_absolute_move(
+            target_pos_encoder=self._x_encoder_start
+        )
+        self.start_frog_event.set()
 
-    def slot_frog_update(self):
-        pass
+    def start_frog(self):
+        if not self.start_frog_event.is_set():
+            return
+
+        self.start_frog_event.clear()
+        self.thread_frog.start()
+
+    def slot_frog_update(self, step, s):
+        self.curve_spectrum.setData(self.spectrometer.wl, s)
+        self.ui.progbar_frog.setValue(int(np.round(step / self.worker_frog.N_steps)))
 
 
 class WorkerFrogStepScan(QtCore.QObject):
-    progress = QtCore.pyqtSignal(np.ndarray)
+    progress = QtCore.pyqtSignal(int, np.ndarray)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps):
@@ -219,7 +238,9 @@ class WorkerFrogStepScan(QtCore.QObject):
                     self.stage._cmd_move_relative, self.x_encoder_step
                 )
                 self.stage.receive_message()  # wait for step complete
-                self.progress.emit(self.spec.spectrum)
+                self.progress.emit(step, self.spec.spectrum)
+
+                step += 1
         finally:
             self.exit()
 
