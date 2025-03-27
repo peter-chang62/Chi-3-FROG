@@ -121,7 +121,15 @@ class SpectrometerTab:
         self.ui.pb_set_t0.clicked.connect(self.slot_pb_set_t0)
         self.ui.pb_spectrometer.clicked.connect(self.slot_pb_spectrometer)
 
-    # -------- line edits for relative move -----------------------------------
+    @property
+    def T0_um(self):
+        return np.genfromtxt("T0_um.txt")
+
+    @T0_um.setter
+    def T0_um(self, T0_um):
+        np.savetxt("T0_um.txt", np.asarray([T0_um]))
+
+    # -------- line edits and slots with no hardware read/write ---------------
     @property
     def step_um(self):
         return float(self.ui.le_step_um.text())
@@ -138,15 +146,6 @@ class SpectrometerTab:
     @step_fs.setter
     def step_fs(self, step_fs):
         self.step_um = (c * step_fs * fs / 2) / um
-
-    # -------- line edits and slots with no hardware read/write ---------------
-    @property
-    def T0_um(self):
-        return np.genfromtxt("T0_um.txt")
-
-    @T0_um.setter
-    def T0_um(self, T0_um):
-        np.savetxt("T0_um.txt", np.asarray([T0_um]))
 
     @property
     def target_pos_um(self):
