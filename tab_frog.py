@@ -28,6 +28,7 @@ class FrogTab:
         self.tab_spectrometer = tab_spectrometer
         self.set_validators()
         self.connect_line_edits_signals_slots()
+        self.connect_push_buttons_signals_slots()
 
         self.curve_spectrum = create_curve(color="w")
         self.ui.gv_autocorr.addItem(self.curve_spectrum)
