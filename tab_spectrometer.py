@@ -198,7 +198,7 @@ class SpectrometerTab:
         self.stage.home()
         self.thread_stage.start()
 
-    def slot_pb_absolute_move(self):
+    def slot_pb_absolute_move(self, hello_world=None):
         if not self._initialized_hardware:
             self.ui.le_error.setText("no hardware initialized")
             return

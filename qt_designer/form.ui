@@ -14,8 +14,8 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_8">
-    <item row="0" column="1">
+   <layout class="QGridLayout" name="gridLayout_12">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="minimumSize">
        <size>
@@ -475,19 +475,19 @@
        <attribute name="title">
         <string>Page</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_12">
+       <layout class="QGridLayout" name="gridLayout_8">
         <item row="0" column="0">
          <widget class="QGroupBox" name="">
           <property name="minimumSize">
            <size>
             <width>427</width>
-            <height>253</height>
+            <height>285</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>427</width>
-            <height>253</height>
+            <height>285</height>
            </size>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -566,7 +566,11 @@
              <item row="0" column="0">
               <layout class="QFormLayout" name="formLayout_3">
                <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_start_fs"/>
+                <widget class="QLineEdit" name="le_frog_start_fs">
+                 <property name="text">
+                  <string>-1000</string>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="1">
                 <widget class="QLabel" name="label_11">
@@ -590,7 +594,11 @@
              <item row="0" column="1">
               <layout class="QFormLayout" name="formLayout_4">
                <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_end_fs"/>
+                <widget class="QLineEdit" name="le_frog_end_fs">
+                 <property name="text">
+                  <string>1000</string>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="1">
                 <widget class="QLabel" name="label_12">
@@ -614,7 +622,11 @@
              <item row="1" column="0">
               <layout class="QFormLayout" name="formLayout_5">
                <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_step_fs"/>
+                <widget class="QLineEdit" name="le_frog_step_fs">
+                 <property name="text">
+                  <string>5</string>
+                 </property>
+                </widget>
                </item>
                <item row="0" column="1">
                 <widget class="QLabel" name="label_4">
@@ -657,6 +669,41 @@
              </property>
             </widget>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QRadioButton" name="rb_step_scan">
+                 <property name="text">
+                  <string>step scan</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="rb_continuous_scan">
+                 <property name="text">
+                  <string>continuous scan</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_15">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
           </layout>
          </widget>
         </item>
@@ -686,7 +733,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>423</height>
+            <height>391</height>
            </size>
           </property>
          </spacer>
