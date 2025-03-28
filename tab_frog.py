@@ -281,7 +281,7 @@ class WorkerFrogStepScan(QtCore.QObject):
                 x = x_encoder / self.stage._max_pos * self.stage._max_range
                 x *= mm / um  # convert to um
 
-                t_fs = np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
+                t_fs = np.round((2 * (x * um - self.T0_um) * um / c) / fs, 3)
                 self._t_array[step] = t_fs
                 self._s[:] = self.spec.spectrum
                 self._s_array[step] = self._s[:]
