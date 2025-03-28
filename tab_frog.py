@@ -239,7 +239,7 @@ class WorkerFrogStepScan(QtCore.QObject):
                     self.stage._cmd_move_relative, self._x_encoder_step
                 )
                 self.stage.receive_message()  # wait for step complete
-                self.progress.emit(step, self.spec.spectrum)
+                self.progress.emit(step, np.asarray(self.spec.spectrum))
 
                 step += 1
         finally:
