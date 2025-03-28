@@ -37,15 +37,15 @@ class SpectrometerTab:
 
     def initialize_hardware(self):
         if self._initialized_hardware:
-            self.ui.le_error.setText("hardware already initialized")
+            self.ui.tb_error.setPlainText("hardware already initialized")
             return
 
         # fetch spectrometer
         try:
             self.spectrometer = StellarnetBlueWave()
-            self.ui.le_error.setText("success")
+            self.ui.tb_error.setPlainText("success")
         except Exception as e:
-            self.ui.le_error.setText(str(e))
+            self.ui.tb_error.setPlainText(str(e))
             self.spectrometer.reset()  # release spectrometer
             return
 
@@ -54,9 +54,9 @@ class SpectrometerTab:
         try:
             port = self.ui.le_stage_com_port.text()
             self.stage = ZaberStage(port)
-            self.ui.le_error.setText("success")
+            self.ui.tb_error.setPlainText("success")
         except Exception as e:
-            self.ui.le_error.setText(str(e))
+            self.ui.tb_error.setPlainText(str(e))
             self.stage.ser.close()  # release stage
             self.spectrometer.reset()  # and release spectrometer
             return
@@ -188,21 +188,21 @@ class SpectrometerTab:
     # ------ stage command slots ----------------------------------------------
     def slot_pb_home(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
             if not self.event_stop_stage.is_set():
                 self.event_stop_stage.set()
             else:
-                self.ui.le_error.setText("wait for stage to stop")
+                self.ui.tb_error.setPlainText("wait for stage to stop")
             return
 
         if self.tab_frog.thread_frog.isRunning():
             if not self.tab_frog.event_stop_frog.is_set():
                 self.tab_frog.event_stop_frog.set()
             else:
-                self.ui.le_error.setText("wait for FROG to stop")
+                self.ui.tb_error.setPlainText("wait for FROG to stop")
             return
 
         self.stage.home()
@@ -210,26 +210,26 @@ class SpectrometerTab:
 
     def slot_pb_absolute_move(self, *args, target_pos_encoder=None):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
             if not self.event_stop_stage.is_set():
                 self.event_stop_stage.set()
             else:
-                self.ui.le_error.setText("wait for stage to stop")
+                self.ui.tb_error.setPlainText("wait for stage to stop")
             return
 
         if self.tab_frog.thread_frog.isRunning():
             if not self.tab_frog.event_stop_frog.is_set():
                 self.tab_frog.event_stop_frog.set()
             else:
-                self.ui.le_error.setText("wait for FROG to stop")
+                self.ui.tb_error.setPlainText("wait for FROG to stop")
             return
 
         x = self.ui.le_target_pos_um.text()
         if x == "":
-            self.ui.le_error.setText("where to?")
+            self.ui.tb_error.setPlainText("where to?")
             return
 
         if target_pos_encoder is None:
@@ -243,26 +243,26 @@ class SpectrometerTab:
 
     def slot_pb_step_back(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
             if not self.event_stop_stage.is_set():
                 self.event_stop_stage.set()
             else:
-                self.ui.le_error.setText("wait for stage to stop")
+                self.ui.tb_error.setPlainText("wait for stage to stop")
             return
 
         if self.tab_frog.thread_frog.isRunning():
             if not self.tab_frog.event_stop_frog.is_set():
                 self.tab_frog.event_stop_frog.set()
             else:
-                self.ui.le_error.setText("wait for FROG to stop")
+                self.ui.tb_error.setPlainText("wait for FROG to stop")
             return
 
         x = self.ui.le_step_um.text()
         if x == "":
-            self.ui.le_error.setText("where to?")
+            self.ui.tb_error.setPlainText("where to?")
             return
 
         x = float(x) * um / mm  # convert to mm
@@ -273,26 +273,26 @@ class SpectrometerTab:
 
     def slot_pb_step_forward(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
             if not self.event_stop_stage.is_set():
                 self.event_stop_stage.set()
             else:
-                self.ui.le_error.setText("wait for stage to stop")
+                self.ui.tb_error.setPlainText("wait for stage to stop")
             return
 
         if self.tab_frog.thread_frog.isRunning():
             if not self.tab_frog.event_stop_frog.is_set():
                 self.tab_frog.event_stop_frog.set()
             else:
-                self.ui.le_error.setText("wait for FROG to stop")
+                self.ui.tb_error.setPlainText("wait for FROG to stop")
             return
 
         x = self.ui.le_step_um.text()
         if x == "":
-            self.ui.le_error.setText("where to?")
+            self.ui.tb_error.setPlainText("where to?")
             return
 
         x = float(x) * um / mm  # convert to mm
@@ -304,11 +304,11 @@ class SpectrometerTab:
     # --------- stage read slots ----------------------------------------------
     def read_and_update_current_stage_position(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy, can't read position")
+            self.ui.tb_error.setPlainText("stage is busy, can't read position")
             return
 
         (x_encoder,) = self.stage.return_current_position()
@@ -324,11 +324,11 @@ class SpectrometerTab:
         the current stage position
         """
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_stage.isRunning():
-            self.ui.le_error.setText("stage is busy, can't read position")
+            self.ui.tb_error.setPlainText("stage is busy, can't read position")
             return
 
         (x_encoder,) = self.stage.return_current_position()
@@ -342,7 +342,11 @@ class SpectrometerTab:
     # ------------ spectrometer -----------------------------------------------
     def slot_pb_spectrometer(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_error.setPlainText("no hardware initialized")
+            return
+
+        if self.tab_frog.thread_frog.isRunning():
+            self.ui.tb_error.setPlainText("FROG is running")
             return
 
         if not self.event_stop_spec.is_set():
@@ -352,7 +356,7 @@ class SpectrometerTab:
                 self.event_stop_spec.set()
 
         else:
-            self.ui.le_error.setText("wait for spectrometer to stop")
+            self.ui.tb_error.setPlainText("wait for spectrometer to stop")
             return
 
     def update_spectrum_plot(self, s):

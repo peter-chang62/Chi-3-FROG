@@ -33,6 +33,7 @@ class FrogTab:
 
         self.curve_spectrum = create_curve(color="w")
         self.ui.gv_autocorr.addItem(self.curve_spectrum)
+        self.ui.progbar_frog.setValue(0)
 
     def closeEvent(self, event):
         pass
@@ -196,22 +197,27 @@ class FrogTab:
     # ---------- frog ---------------------------------------------------------
     def slot_pb_frog(self):
         if not self._initialized_hardware:
-            self.ui.le_error.setText("no hardware initialized")
+            self.ui.tb_frog_error.setPlainText("no hardware initialized")
             return
 
         if self.thread_frog.isRunning():
             if not self.event_stop_frog.is_set():
                 self.event_stop_frog.set()
             else:
-                self.ui.le_error.setText("wait for FROG to stop")
+                self.ui.tb_frog_error.setPlainText("wait for FROG to stop")
             return
 
         if self.tab_spectrometer.thread_stage.isRunning():
             if not self.tab_spectrometer.event_stop_stage.is_set():
                 self.tab_spectrometer.event_stop_stage.set()
             else:
-                self.ui.le_error.setText("wait for stage to stop")
+                self.ui.tb_frog_error.setPlainText("wait for stage to stop")
             return
+
+        if self.tab_spectrometer.thread_spec.isRunning():
+            if not self.tab_spectrometer.event_stop_spec.is_set():
+                self.tab_spectrometer.event_stop_spec.set()
+                self.tab_spectrometer.thread_spec.wait()
 
         self.worker_frog._x_encoder_step = self._x_encoder_step
         self.worker_frog.N_steps = self._N_steps
