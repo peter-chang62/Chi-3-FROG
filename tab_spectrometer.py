@@ -63,6 +63,7 @@ class SpectrometerTab:
         self._initialized_hardware = True
         self.create_threads_workers()
         self.tab_frog.create_threads_workers()
+        self.tab_frog.tab_spectrometer = self
 
         self.read_and_update_current_stage_position()
 
