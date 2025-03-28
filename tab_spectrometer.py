@@ -25,7 +25,7 @@ class SpectrometerTab:
         ui: Ui_MainWindow
         ui = self.parent.ui
         self.ui = ui
-        self.tab_frog = self.parent.tab_frog
+        self.tab_frog = parent.tab_frog
 
         self.set_validators()
         self.connect_line_edits_signals_slots()

@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
 
         self.tab_spectrometer = SpectrometerTab(self)
-        self.tab_frog = FrogTab(self.ui)
+        self.tab_frog = FrogTab(self)
 
     def closeEvent(self, event):
         self.tab_spectrometer.closeEvent(event)
