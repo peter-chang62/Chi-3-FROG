@@ -244,7 +244,7 @@ class WorkerFrogStepScan(QtCore.QObject):
                     self.stage._cmd_move_relative, self._x_encoder_step
                 )
                 cmd_num, msg = self.stage.receive_message()  # wait for step complete
-                x_encoder = struct.unpack("l", msg)
+                (x_encoder,) = struct.unpack("l", msg)
                 x = x_encoder / self.stage._max_pos * self.stage._max_range
                 self.progress.emit(step, x, np.asarray(self.spec.spectrum))
 
