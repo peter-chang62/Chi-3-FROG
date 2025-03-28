@@ -232,6 +232,7 @@ class FrogTab:
             (wl[-1] - wl[0]) / (wl.size - 1),
         )
         self.im.setTransform(self._im_transform)
+        self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
 
         self.tab_spectrometer.slot_pb_absolute_move(
             target_pos_encoder=self._x_encoder_start
@@ -274,6 +275,8 @@ class FrogTab:
                 self.spectrometer.wl[-1] - self.spectrometer.wl[0],
             ]
         )
+
+        self._s_array[: step + 1] = s_array
 
         # self.ui.gv_frog.setImage(
         #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
