@@ -9,6 +9,7 @@ from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
+from scipy.misc import face
 
 fs = 1e-15
 um = 1e-6
@@ -32,9 +33,12 @@ class FrogTab:
         self.connect_line_edits_signals_slots()
         self.connect_push_buttons_signals_slots()
 
-        self.curve_spectrum = create_curve(color="w")
-        self.ui.gv_autocorr.addItem(self.curve_spectrum)
+        self.curve_spectrum = tab_spectrometer.curve_spectrum
         self.ui.progbar_frog.setValue(0)
+
+        self.ui.gv_frog.ui.menuBtn.hide()
+        self.ui.gv_frog.ui.histogram.hide()
+        self.ui.gv_frog.setImage(face(True))
 
     def closeEvent(self, event):
         pass
