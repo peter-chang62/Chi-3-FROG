@@ -208,7 +208,7 @@ class FrogTab:
 
     def slot_frog_update(self, step, s):
         self.curve_spectrum.setData(self.spectrometer.wl, s)
-        self.ui.progbar_frog.setValue(int(np.round(step / self.worker_frog.N_steps)))
+        self.ui.progbar_frog.setValue(int(np.round(step * 100 / self.worker_frog.N_steps)))
 
 
 class WorkerFrogStepScan(QtCore.QObject):
