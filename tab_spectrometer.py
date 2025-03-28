@@ -21,9 +21,11 @@ def create_curve(color="b", width=2, x=None, y=None):
 
 
 class SpectrometerTab:
-    def __init__(self, ui):
+    def __init__(self, parent):
         ui: Ui_MainWindow
+        ui = self.parent.ui
         self.ui = ui
+        self.tab_frog = self.parent.tab_frog
 
         self.set_validators()
         self.connect_line_edits_signals_slots()
@@ -62,7 +64,7 @@ class SpectrometerTab:
 
         self._initialized_hardware = True
         self.create_threads_workers()
-        self.ui.tab_frog.create_threads_workers()
+        self.tab_frog.create_threads_workers()
 
         self.read_and_update_current_stage_position()
 

@@ -21,9 +21,11 @@ def create_curve(color="b", width=2, x=None, y=None):
 
 
 class FrogTab:
-    def __init__(self, ui, tab_spectrometer):
+    def __init__(self, parent):
         ui: Ui_MainWindow
         tab_spectrometer: SpectrometerTab
+        ui = parent.ui
+        tab_spectrometer = parent.tab_spectrometer
         self.ui = ui
         self.tab_spectrometer = tab_spectrometer
         self.set_validators()
