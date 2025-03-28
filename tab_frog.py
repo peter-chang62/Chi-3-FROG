@@ -257,7 +257,6 @@ class FrogTab:
 
         x = t_array
         y = self.spectrometer.wl
-        self._im_transform.translate(x[0], y[0])
         if t_array.size > 1:
             scale = [
                 (x[-1] - x[0]) / (x.size - 1),
