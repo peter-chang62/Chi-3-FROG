@@ -36,13 +36,13 @@ class FrogTab:
 
         self.ui.progbar_frog.setValue(0)
 
-        self.ui.gv_frog.ui.menuBtn.hide()
-        self.ui.gv_frog.ui.histogram.hide()
-
-        self._view_box = self.ui.gv_frog.getView()
+        self.im = pg.ImageItem()
+        self._transform_im = QTransform()
 
     def closeEvent(self, event):
-        pass
+        if self.thread_frog.isRunning():
+            self.thread_frog.quit()
+            self.thread_frog.wait()
 
     def set_validators(self):
         ui = self.ui
@@ -230,13 +230,16 @@ class FrogTab:
         self.worker_frog.N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
 
-        self._view_box.setRange(
-            xRange=[self.frog_start_fs, self.frog_end_fs],
-            yRange=[self.spectrometer.wl[0], self.spectrometer.wl[-1]],
-        )
-
         self._t_array = np.zeros(self._N_steps)
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
+
+        self._transform_im.translate(self.frog_start_fs, self.spectrometer.wl[0])
+        self._transform_im.scale(
+            (self.frog_end_fs - self.frog_start_fs) / (self._N_steps - 1),
+            (self.spectrometer.wl[-1] - self.spectrometer.wl[0])
+            / (self.spectrometer.wl.size - 1),
+        )
+        self.im.setTransform(self._transform_im)
 
         self.tab_spectrometer.slot_pb_absolute_move(
             target_pos_encoder=self._x_encoder_start
@@ -260,34 +263,36 @@ class FrogTab:
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(t_fs)
 
-        x = t_array
-        y = self.spectrometer.wl
-        if t_array.size > 1:
-            scale = [
-                (x[-1] - x[0]) / (x.size - 1),
-                (y[-1] - y[0]) / (y.size - 1),
-            ]
-        else:
-            scale = None
+        # x = t_array
+        # y = self.spectrometer.wl
+        # if t_array.size > 1:
+        #     scale = [
+        #         (x[-1] - x[0]) / (x.size - 1),
+        #         (y[-1] - y[0]) / (y.size - 1),
+        #     ]
+        # else:
+        #     scale = None
 
-        view_range = self._view_box.viewRange()
+        # view_range = self._view_box.viewRange()
 
-        self.ui.gv_frog.setImage(
-            s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
-        )
-        self.ui.gv_frog.roi.setPos([t_array[0], self.spectrometer.wl[0]])
-        self.ui.gv_frog.roi.setSize(
-            [
-                t_array[-1] - t_array[0],
-                self.spectrometer.wl[-1] - self.spectrometer.wl[0],
-            ]
-        )
+        # self.ui.gv_frog.setImage(
+        #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
+        # )
+        # self.ui.gv_frog.roi.setPos([t_array[0], self.spectrometer.wl[0]])
+        # self.ui.gv_frog.roi.setSize(
+        #     [
+        #         t_array[-1] - t_array[0],
+        #         self.spectrometer.wl[-1] - self.spectrometer.wl[0],
+        #     ]
+        # )
 
-        self._view_box.setRange(
-            xRange=view_range[0],  # Preserve the x-range
-            yRange=view_range[1],  # Preserve the y-range
-            padding=0,  # Optional: Adjust padding if needed
-        )
+        # self._view_box.setRange(
+        #     xRange=view_range[0],  # Preserve the x-range
+        #     yRange=view_range[1],  # Preserve the y-range
+        #     padding=0,  # Optional: Adjust padding if needed
+        # )
+
+        self.im.setImage(s_array)
 
         self._s_array[: step + 1] = s_array
         self._t_array[: step + 1] = t_array
