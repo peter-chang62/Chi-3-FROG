@@ -216,7 +216,7 @@ class FrogTab:
 
         if self.tab_spectrometer.thread_spec.isRunning():
             if not self.tab_spectrometer.event_stop_spec.is_set():
-                self.tab_spectrometer.event_stop_spec.set()
+                self.tab_spectrometer.thread_spec.quit()
                 self.tab_spectrometer.thread_spec.wait()
 
         self.worker_frog._x_encoder_step = self._x_encoder_step
