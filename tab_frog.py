@@ -140,19 +140,19 @@ class FrogTab:
     def _x_encoder_start(self):
         x = self.frog_start_um * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
-        return x_encoder
+        return int(np.round(x_encoder))
 
     @property
     def _x_encoder_end(self):
         x = self.frog_end_um * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
-        return x_encoder
+        return int(np.round(x_encoder))
 
     @property
     def _x_encoder_step(self):
         x = self.frog_step_um * um / mm  # convert to mm
         x_encoder = x / self.stage._max_range * self.stage._max_pos
-        return x_encoder
+        return int(np.round(x_encoder))
 
     @property
     def _N_steps(self):
