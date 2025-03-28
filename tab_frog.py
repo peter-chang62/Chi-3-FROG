@@ -71,7 +71,7 @@ class FrogTab:
             self.spectrometer,
             self.stage,
             self.event_stop_frog,
-            self.x_encoder_step,
+            self._x_encoder_step,
             self._N_steps,
         )
         self.worker_frog.moveToThread(self.thread_frog)
@@ -224,7 +224,7 @@ class WorkerFrogStepScan(QtCore.QObject):
         self.stage = stage
         self.stop_event = stop_event
 
-        self.x_encoder_step = x_encoder_step
+        self._x_encoder_step = x_encoder_step
         self.N_steps = N_steps
 
     def loop(self):
@@ -236,7 +236,7 @@ class WorkerFrogStepScan(QtCore.QObject):
                     self.exit()
 
                 self.stage.send_message(
-                    self.stage._cmd_move_relative, self.x_encoder_step
+                    self.stage._cmd_move_relative, self._x_encoder_step
                 )
                 self.stage.receive_message()  # wait for step complete
                 self.progress.emit(step, self.spec.spectrum)
