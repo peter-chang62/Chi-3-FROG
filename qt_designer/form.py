@@ -402,4 +402,5 @@ class Ui_MainWindow(object):
         self.label_21.setText(_translate("MainWindow", "smooth"))
         self.label_22.setText(_translate("MainWindow", "x timing"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("MainWindow", "Settings"))
-from pyqtgraph import ImageView, PlotWidget
+from misc import ImageView
+from pyqtgraph import PlotWidget

@@ -9,18 +9,10 @@ from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
-from scipy.misc import face
 
 fs = 1e-15
 um = 1e-6
 mm = 1e-3
-
-
-def create_curve(color="b", width=2, x=None, y=None):
-    curve = pg.PlotDataItem(pen=pg.mkPen(color=color, width=width))
-    if (x is not None) and (y is not None):
-        curve.setData(x, y)
-    return curve
 
 
 class FrogTab:
@@ -33,12 +25,10 @@ class FrogTab:
         self.connect_line_edits_signals_slots()
         self.connect_push_buttons_signals_slots()
 
-        self.curve_spectrum = tab_spectrometer.curve_spectrum
         self.ui.progbar_frog.setValue(0)
 
         self.ui.gv_frog.ui.menuBtn.hide()
         self.ui.gv_frog.ui.histogram.hide()
-        self.ui.gv_frog.setImage(face(True))
 
     def closeEvent(self, event):
         pass
@@ -240,10 +230,10 @@ class FrogTab:
         self.thread_frog.start()
 
     def slot_frog_update(self, step, pos_um, s_array):
-        self.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
         self.ui.progbar_frog.setValue(
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
+        self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
         self.tab_spectrometer.slot_lcd_current_pos(pos_um)
 
 

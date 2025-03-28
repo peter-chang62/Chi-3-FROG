@@ -887,7 +887,7 @@
   <customwidget>
    <class>ImageView</class>
    <extends>QGraphicsView</extends>
-   <header>pyqtgraph</header>
+   <header>misc</header>
   </customwidget>
  </customwidgets>
  <resources/>

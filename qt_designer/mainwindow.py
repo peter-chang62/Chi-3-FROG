@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import sys
+sys.path.append("../")
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
