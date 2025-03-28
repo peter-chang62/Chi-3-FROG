@@ -6,6 +6,7 @@ import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
+
 # from tab_frog import FrogTab
 
 
@@ -328,6 +329,10 @@ class SpectrometerTab:
             return
 
         if self.thread_stage.isRunning():
+            self.ui.tb_error.setPlainText("stage is busy, can't read position")
+            return
+
+        if self.tab_frog.thread_frog.isRunning():
             self.ui.tb_error.setPlainText("stage is busy, can't read position")
             return
 
