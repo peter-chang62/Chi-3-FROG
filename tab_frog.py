@@ -241,14 +241,16 @@ class FrogTab:
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(t_fs)
 
-        self.ui.gv_frog.setImage(
-            s_array,
-            pos=[t_array[0], self.spectrometer.wl[0]],
-            scale=[
+        if t_array.size > 1:
+            scale = [
                 (t_array[-1] - t_array[0]) / (t_array.size - 1),
                 (self.spectrometer.wl[-1] - self.spectrometer.wl[0])
                 / (self.spectrometer.wl.size - 1),
-            ],
+            ]
+        else:
+            scale = None
+        self.ui.gv_frog.setImage(
+            s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
         )
 
 
