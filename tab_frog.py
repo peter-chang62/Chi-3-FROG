@@ -9,6 +9,8 @@ from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
+from PyQt5.QtGui import QTransform
+
 
 fs = 1e-15
 um = 1e-6
@@ -29,6 +31,10 @@ class FrogTab:
 
         self.ui.gv_frog.ui.menuBtn.hide()
         self.ui.gv_frog.ui.histogram.hide()
+
+        self.im = pg.ImageItem()
+        self._im_transform = QTransform()
+        self.ui.gv_frog.plot_item.addItem(self.im)
 
     def closeEvent(self, event):
         pass
@@ -241,17 +247,24 @@ class FrogTab:
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(t_fs)
 
+        x = t_array
+        y = self.spectrometer.wl
         if t_array.size > 1:
             scale = [
-                (t_array[-1] - t_array[0]) / (t_array.size - 1),
-                (self.spectrometer.wl[-1] - self.spectrometer.wl[0])
-                / (self.spectrometer.wl.size - 1),
+                (x[-1] - x[0]) / (x.size - 1),
+                (y[-1] - y[0]) / (y.size - 1),
             ]
         else:
             scale = None
-        self.ui.gv_frog.setImage(
-            s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
-        )
+        self._im_transform.translate(x[0], y[0])
+        self._im_transform.scale(scale)
+        self.im.setTransform(self._im_transform)
+
+        self.im.setImage(s_array, autoLevels=False)
+
+        # self.ui.gv_frog.setImage(
+        #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
+        # )
 
 
 class WorkerFrogStepScan(QtCore.QObject):
