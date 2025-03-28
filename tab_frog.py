@@ -234,7 +234,10 @@ class FrogTab:
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
         self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
-        self.tab_spectrometer.slot_lcd_current_pos(pos_um)
+
+        t_fs = np.round((2 * (pos_um - self.T0_um) * um / c) / fs, 3)
+        self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
+        self.ui.lcd_current_pos_fs.display(t_fs)
 
 
 class WorkerFrogStepScan(QtCore.QObject):
