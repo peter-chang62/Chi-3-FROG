@@ -230,11 +230,9 @@ class FrogTab:
         self.worker_frog.N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
 
-        self._view_box.setLimits(
-            xMin=self.frog_start_fs,
-            xMax=self.frog_end_fs,
-            yMin=self.spectrometer.wl[0],
-            yMax=self.spectrometer.wl[-1],
+        self._view_box.setRange(
+            xRange=[self.frog_start_fs, self.frog_end_fs],
+            yRange=[self.spectrometer.wl[0], self.spectrometer.wl[-1]],
         )
 
         self._t_array = np.zeros(self._N_steps)
