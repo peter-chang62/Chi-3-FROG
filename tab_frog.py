@@ -21,9 +21,11 @@ def create_curve(color="b", width=2, x=None, y=None):
 
 
 class FrogTab:
-    def __init__(self, ui):
+    def __init__(self, ui, tab_spectrometer):
         ui: Ui_MainWindow
+        tab_spectrometer: SpectrometerTab
         self.ui = ui
+        self.tab_spectrometer = tab_spectrometer
         self.set_validators()
         self.connect_line_edits_signals_slots()
         self.connect_push_buttons_signals_slots()
@@ -81,6 +83,10 @@ class FrogTab:
     @property
     def T0_um(self):
         return self.tab_spectrometer.T0_um
+
+    @property
+    def _initialized_hardware(self):
+        return self.tab_spectrometer._initialized_hardware
 
     @property
     def spectrometer(self):
