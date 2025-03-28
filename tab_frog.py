@@ -7,6 +7,7 @@ import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
+import struct
 
 fs = 1e-15
 um = 1e-6
@@ -206,13 +207,16 @@ class FrogTab:
         self.start_frog_event.clear()
         self.thread_frog.start()
 
-    def slot_frog_update(self, step, s):
+    def slot_frog_update(self, step, pos_um, s):
         self.curve_spectrum.setData(self.spectrometer.wl, s)
-        self.ui.progbar_frog.setValue(int(np.round(step * 100 / self.worker_frog.N_steps)))
+        self.ui.progbar_frog.setValue(
+            int(np.round(step * 100 / self.worker_frog.N_steps))
+        )
+        self.tab_spectrometer.slot_lcd_current_pos(pos_um)
 
 
 class WorkerFrogStepScan(QtCore.QObject):
-    progress = QtCore.pyqtSignal(int, np.ndarray)
+    progress = QtCore.pyqtSignal(int, float, np.ndarray)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps):
@@ -239,8 +243,10 @@ class WorkerFrogStepScan(QtCore.QObject):
                 self.stage.send_message(
                     self.stage._cmd_move_relative, self._x_encoder_step
                 )
-                self.stage.receive_message()  # wait for step complete
-                self.progress.emit(step, np.asarray(self.spec.spectrum))
+                cmd_num, msg = self.stage.receive_message()  # wait for step complete
+                x_encoder = struct.unpack("l", msg)
+                x = x_encoder / self.stage._max_pos * self.stage._max_range
+                self.progress.emit(step, x, np.asarray(self.spec.spectrum))
 
                 step += 1
         finally:
