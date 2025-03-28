@@ -257,6 +257,7 @@ class WorkerFrogStepScan(QtCore.QObject):
             while step < self.N_steps:
                 if self.stop_event.is_set():
                     self.exit()
+                    return
 
                 self.stage.send_message(
                     self.stage._cmd_move_relative, self._x_encoder_step
