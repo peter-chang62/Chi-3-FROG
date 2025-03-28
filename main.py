@@ -20,8 +20,8 @@ class MainWindow(QMainWindow):
         self.tab_spectrometer.tab_frog = self.tab_frog
 
     def closeEvent(self, event):
-        self.tab_spectrometer.closeEvent(event)
         self.tab_frog.closeEvent(event)
+        self.tab_spectrometer.closeEvent(event)
         super().closeEvent(event)
 
 

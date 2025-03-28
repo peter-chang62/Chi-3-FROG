@@ -38,6 +38,7 @@ class FrogTab:
 
         self.im = pg.ImageItem()
         self._transform_im = QTransform()
+        self.ui.gv_frog.addItem(self.im)
 
     def closeEvent(self, event):
         if self.thread_frog.isRunning():
