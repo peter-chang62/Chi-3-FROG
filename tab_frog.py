@@ -254,10 +254,8 @@ class FrogTab:
                 (x[-1] - x[0]) / (x.size - 1),
                 (y[-1] - y[0]) / (y.size - 1),
             ]
-        else:
-            scale = None
+            self._im_transform.scale(*scale)
         self._im_transform.translate(x[0], y[0])
-        self._im_transform.scale(scale)
         self.im.setTransform(self._im_transform)
 
         self.im.setImage(s_array, autoLevels=False)
