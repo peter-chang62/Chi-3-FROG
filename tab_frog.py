@@ -242,7 +242,7 @@ class FrogTab:
 
 
 class WorkerFrogStepScan(QtCore.QObject):
-    progress = QtCore.pyqtSignal(int, float, np.ndarray)
+    progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
