@@ -41,6 +41,9 @@ class FrogTab:
         self._plot_item = self.ui.gv_frog.addPlot()
         self._plot_item.addItem(self.im)
 
+        self.curve = create_curve("w")
+        self.ui.gv_frog_autocorr.addItem(self.curve)
+
     def closeEvent(self, event):
         if self._initialized_hardware:
             if self.thread_frog.isRunning():
@@ -276,6 +279,9 @@ class FrogTab:
 
         # update the frog image
         self.im.setImage(s_array)
+
+        marginal = np.sum(s_array, axis=1)
+        self.curve.setData(t_array, marginal)
 
         # store the data
         self._s_array[: step + 1] = s_array[:]
