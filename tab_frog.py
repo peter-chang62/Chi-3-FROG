@@ -229,13 +229,13 @@ class FrogTab:
         self.start_frog_event.clear()
         self.thread_frog.start()
 
-    def slot_frog_update(self, step, pos_um, s_array):
+    def slot_frog_update(self, step, pos_um, t_array, s_array):
         self.ui.progbar_frog.setValue(
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
         self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
 
-        t_fs = np.round((2 * (pos_um - self.T0_um) * um / c) / fs, 3)
+        t_fs = t_array[-1]
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(t_fs)
 
@@ -244,7 +244,7 @@ class WorkerFrogStepScan(QtCore.QObject):
     progress = QtCore.pyqtSignal(int, float, np.ndarray)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps):
+    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
         super().__init__()
         spectrometer: StellarnetBlueWave
         stage: ZaberStage
@@ -258,7 +258,10 @@ class WorkerFrogStepScan(QtCore.QObject):
         self.N_steps = N_steps
 
         self._s_array = np.zeros([N_steps, spectrometer.wl.size])
+        self._t_array = np.zeros(N_steps)
         self._s = np.zeros(spectrometer.wl.size)
+
+        self.T0_um = T0_um
 
     def loop(self):
         step = 0
@@ -275,11 +278,14 @@ class WorkerFrogStepScan(QtCore.QObject):
                 cmd_num, msg = self.stage.receive_message()  # wait for step complete
                 (x_encoder,) = struct.unpack("l", msg)
                 x = x_encoder / self.stage._max_pos * self.stage._max_range
-                x *= mm / um
+                x *= mm / um  # convert to um
 
+                t_fs = np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
+                self._t_array[step] = t_fs
                 self._s[:] = self.spec.spectrum
                 self._s_array[step] = self._s[:]
-                self.progress.emit(step, x, self._s_array[: step + 1])
+
+                self.progress.emit(step, x, self._t_array, self._s_array[: step + 1])
 
                 step += 1
         finally:
