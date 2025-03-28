@@ -229,21 +229,26 @@ class FrogTab:
                 self.tab_spectrometer.thread_spec.quit()
                 self.tab_spectrometer.thread_spec.wait()
 
+        # update parameters that may have changed since the application started
         self.worker_frog._x_encoder_step = self._x_encoder_step
         self.worker_frog.N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
 
+        # initialize arrays
         self._t_array = np.zeros(self._N_steps)
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
 
+        # set the frog plot axis limits
         self._transform_im.translate(self.frog_start_fs, self.spectrometer.wl[0])
+        x = [self.frog_start_fs, self.frog_end_fs]
+        y = self.spectrometer.wl
         self._transform_im.scale(
-            (self.frog_end_fs - self.frog_start_fs) / (self._N_steps - 1),
-            (self.spectrometer.wl[-1] - self.spectrometer.wl[0])
-            / (self.spectrometer.wl.size - 1),
+            (x[-1] - x[0]) / (self._N_steps - 1),
+            (y[-1] - y[0]) / (y.size - 1),
         )
         self.im.setTransform(self._transform_im)
 
+        # move to start and set frog start threading event
         self.tab_spectrometer.slot_pb_absolute_move(
             target_pos_encoder=self._x_encoder_start
         )
@@ -257,48 +262,24 @@ class FrogTab:
         self.thread_frog.start()
 
     def slot_frog_update(self, step, pos_um, t_array, s_array):
+        # update the progress bar
         self.ui.progbar_frog.setValue(
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
+        # update the spectrum in the spectrometer tab
         self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
 
+        # update the lcd display in the spectrometer tab
         t_fs = t_array[-1]
         self.ui.lcd_current_pos_um.display(np.round(pos_um, 3))
         self.ui.lcd_current_pos_fs.display(t_fs)
 
-        # x = t_array
-        # y = self.spectrometer.wl
-        # if t_array.size > 1:
-        #     scale = [
-        #         (x[-1] - x[0]) / (x.size - 1),
-        #         (y[-1] - y[0]) / (y.size - 1),
-        #     ]
-        # else:
-        #     scale = None
-
-        # view_range = self._view_box.viewRange()
-
-        # self.ui.gv_frog.setImage(
-        #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
-        # )
-        # self.ui.gv_frog.roi.setPos([t_array[0], self.spectrometer.wl[0]])
-        # self.ui.gv_frog.roi.setSize(
-        #     [
-        #         t_array[-1] - t_array[0],
-        #         self.spectrometer.wl[-1] - self.spectrometer.wl[0],
-        #     ]
-        # )
-
-        # self._view_box.setRange(
-        #     xRange=view_range[0],  # Preserve the x-range
-        #     yRange=view_range[1],  # Preserve the y-range
-        #     padding=0,  # Optional: Adjust padding if needed
-        # )
-
+        # update the frog image
         self.im.setImage(s_array)
 
-        self._s_array[: step + 1] = s_array
-        self._t_array[: step + 1] = t_array
+        # store the data
+        self._s_array[: step + 1] = s_array[:]
+        self._t_array[: step + 1] = t_array[:]
 
 
 class WorkerFrogStepScan(QtCore.QObject):
