@@ -6,6 +6,7 @@ import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
+from tab_frog import FrogTab
 
 
 fs = 1e-15
@@ -62,6 +63,7 @@ class SpectrometerTab:
 
         self._initialized_hardware = True
         self.create_threads_workers()
+        self.tab_frog: FrogTab
         self.tab_frog.create_threads_workers()
 
         self.read_and_update_current_stage_position()
@@ -196,6 +198,13 @@ class SpectrometerTab:
                 self.ui.le_error.setText("wait for stage to stop")
             return
 
+        if self.tab_frog.thread_frog.isRunning():
+            if not self.tab_frog.event_stop_frog.is_set():
+                self.tab_frog.event_stop_frog.set()
+            else:
+                self.ui.le_error.setText("wait for FROG to stop")
+            return
+
         self.stage.home()
         self.thread_stage.start()
 
@@ -209,6 +218,13 @@ class SpectrometerTab:
                 self.event_stop_stage.set()
             else:
                 self.ui.le_error.setText("wait for stage to stop")
+            return
+
+        if self.tab_frog.thread_frog.isRunning():
+            if not self.tab_frog.event_stop_frog.is_set():
+                self.tab_frog.event_stop_frog.set()
+            else:
+                self.ui.le_error.setText("wait for FROG to stop")
             return
 
         x = self.ui.le_target_pos_um.text()
@@ -237,6 +253,13 @@ class SpectrometerTab:
                 self.ui.le_error.setText("wait for stage to stop")
             return
 
+        if self.tab_frog.thread_frog.isRunning():
+            if not self.tab_frog.event_stop_frog.is_set():
+                self.tab_frog.event_stop_frog.set()
+            else:
+                self.ui.le_error.setText("wait for FROG to stop")
+            return
+
         x = self.ui.le_step_um.text()
         if x == "":
             self.ui.le_error.setText("where to?")
@@ -258,6 +281,13 @@ class SpectrometerTab:
                 self.event_stop_stage.set()
             else:
                 self.ui.le_error.setText("wait for stage to stop")
+            return
+
+        if self.tab_frog.thread_frog.isRunning():
+            if not self.tab_frog.event_stop_frog.is_set():
+                self.tab_frog.event_stop_frog.set()
+            else:
+                self.ui.le_error.setText("wait for FROG to stop")
             return
 
         x = self.ui.le_step_um.text()

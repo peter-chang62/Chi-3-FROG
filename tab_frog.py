@@ -195,6 +195,24 @@ class FrogTab:
 
     # ---------- frog ---------------------------------------------------------
     def slot_pb_frog(self):
+        if not self._initialized_hardware:
+            self.ui.le_error.setText("no hardware initialized")
+            return
+
+        if self.thread_frog.isRunning():
+            if not self.event_stop_frog.is_set():
+                self.event_stop_frog.set()
+            else:
+                self.ui.le_error.setText("wait for FROG to stop")
+            return
+
+        if self.tab_spectrometer.thread_stage.isRunning():
+            if not self.tab_spectrometer.event_stop_stage.is_set():
+                self.tab_spectrometer.event_stop_stage.set()
+            else:
+                self.ui.le_error.setText("wait for stage to stop")
+            return
+
         self.tab_spectrometer.slot_pb_absolute_move(
             target_pos_encoder=self._x_encoder_start
         )
@@ -255,4 +273,5 @@ class WorkerFrogStepScan(QtCore.QObject):
 
     def exit(self):
         self.stage.close_port()
+        self.stop_event.clear()
         self.finished.emit()
