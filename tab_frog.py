@@ -162,7 +162,7 @@ class FrogTab:
 
     @property
     def frog_step_fs(self):
-        return (2 * (self.frog_step_um - self.T0_um) * um / c) / fs
+        return (2 * self.frog_step_um * um / c) / fs
 
     @frog_step_um.setter
     def frog_step_um(self, frog_step_um):
@@ -171,7 +171,7 @@ class FrogTab:
 
     @frog_step_fs.setter
     def frog_step_fs(self, frog_step_fs):
-        self.frog_step_um = (c * frog_step_fs * fs / 2) / um + self.T0_um
+        self.frog_step_um = (c * frog_step_fs * fs / 2) / um
 
     def slot_le_frog_start_fs(self):
         self.frog_start_fs = float(self.ui.le_frog_start_fs.text())
