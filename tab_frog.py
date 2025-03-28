@@ -280,8 +280,9 @@ class FrogTab:
         # update the frog image
         self.im.setImage(s_array)
 
-        marginal = np.sum(s_array, axis=1)
-        self.curve.setData(t_array, marginal)
+        if step > 0:  # needs more than one point
+            marginal = np.sum(s_array, axis=1)
+            self.curve.setData(t_array, marginal)
 
         # store the data
         self._s_array[: step + 1] = s_array[:]
