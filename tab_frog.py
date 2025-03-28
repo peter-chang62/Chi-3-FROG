@@ -265,7 +265,8 @@ class FrogTab:
         else:
             scale = None
 
-        view_range = self._view_box.viewRange()
+        if step > 0:
+            view_range = self._view_box.viewRange()
         self.ui.gv_frog.setImage(
             s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
         )
@@ -276,11 +277,12 @@ class FrogTab:
                 self.spectrometer.wl[-1] - self.spectrometer.wl[0],
             ]
         )
-        self._view_box.setRange(
-            xRange=view_range[0],  # Preserve the x-range
-            yRange=view_range[1],  # Preserve the y-range
-            padding=0,  # Optional: Adjust padding if needed
-        )
+        if step > 0:
+            self._view_box.setRange(
+                xRange=view_range[0],  # Preserve the x-range
+                yRange=view_range[1],  # Preserve the y-range
+                padding=0,  # Optional: Adjust padding if needed
+            )
 
         self._s_array[: step + 1] = s_array
         self._t_array[: step + 1] = t_array
