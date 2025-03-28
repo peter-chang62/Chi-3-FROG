@@ -266,7 +266,14 @@ class FrogTab:
         #     self._im_transform.scale(*scale)
         # self.im.setTransform(self._im_transform)
 
-        self.im.setImage(s_array, autoLevels=False)
+        self.im.setImage(s_array, autoLevels=True)
+        self.ui.gv_frog.roi.setPos([t_array[0], self.spectrometer.wl[0]])
+        self.ui.gv_frog.roi.setSize(
+            [
+                t_array[-1] - t_array[0],
+                self.spectrometer.wl[-1] - self.spectrometer.wl[0],
+            ]
+        )
 
         # self.ui.gv_frog.setImage(
         #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
