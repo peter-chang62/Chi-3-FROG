@@ -44,6 +44,8 @@ class FrogTab:
         self.curve = create_curve("w")
         self.ui.gv_frog_autocorr.addItem(self.curve)
 
+        self.ui.rb_step_scan.setChecked(True)
+
     def closeEvent(self, event):
         if self._initialized_hardware:
             if self.thread_frog.isRunning():
