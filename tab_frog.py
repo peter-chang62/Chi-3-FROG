@@ -1,5 +1,5 @@
 from qt_designer.form import Ui_MainWindow
-from tab_spectrometer import SpectrometerTab
+# from tab_spectrometer import SpectrometerTab
 import threading
 from PyQt5 import QtCore, QtGui
 from scipy.constants import c
@@ -24,7 +24,7 @@ def create_curve(color="b", width=2, x=None, y=None):
 class FrogTab:
     def __init__(self, ui, tab_spectrometer):
         ui: Ui_MainWindow
-        tab_spectrometer: SpectrometerTab
+        # tab_spectrometer: SpectrometerTab
         self.ui = ui
         self.tab_spectrometer = tab_spectrometer
         self.set_validators()
