@@ -230,6 +230,13 @@ class FrogTab:
         self.worker_frog.N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
 
+        self._view_box.setLimits(
+            xMin=self.frog_start_fs,
+            xMax=self.frog_end_fs,
+            yMin=self.spectrometer.wl[0],
+            yMax=self.spectrometer.wl[-1],
+        )
+
         self._t_array = np.zeros(self._N_steps)
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
 
@@ -265,8 +272,8 @@ class FrogTab:
         else:
             scale = None
 
-        if step > 0:
-            view_range = self._view_box.viewRange()
+        view_range = self._view_box.viewRange()
+
         self.ui.gv_frog.setImage(
             s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
         )
@@ -277,12 +284,12 @@ class FrogTab:
                 self.spectrometer.wl[-1] - self.spectrometer.wl[0],
             ]
         )
-        if step > 0:
-            self._view_box.setRange(
-                xRange=view_range[0],  # Preserve the x-range
-                yRange=view_range[1],  # Preserve the y-range
-                padding=0,  # Optional: Adjust padding if needed
-            )
+
+        self._view_box.setRange(
+            xRange=view_range[0],  # Preserve the x-range
+            yRange=view_range[1],  # Preserve the y-range
+            padding=0,  # Optional: Adjust padding if needed
+        )
 
         self._s_array[: step + 1] = s_array
         self._t_array[: step + 1] = t_array
