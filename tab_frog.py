@@ -35,6 +35,7 @@ class FrogTab:
         self.im = pg.ImageItem()
         self._im_transform = QTransform()
         self.ui.gv_frog.plot_item.addItem(self.im)
+        self.marginal_plot = self.ui.gv_frog.getView().getAxis("bottom")
 
     def closeEvent(self, event):
         pass
@@ -277,6 +278,9 @@ class FrogTab:
         )
 
         self._s_array[: step + 1] = s_array
+        data = self.ui.gv_frog.roi.getArrayRegion(s_array, self.im)
+        marginal = np.sum(data, axis=0)
+        self.marginal_plot.setData(marginal)
 
         # self.ui.gv_frog.setImage(
         #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
