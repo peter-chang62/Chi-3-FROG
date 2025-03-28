@@ -158,7 +158,8 @@ class FrogTab:
     def _N_steps(self):
         end = self._x_encoder_end
         start = self._x_encoder_start
-        return int(np.round(end - start))
+        step = self._x_encoder_step
+        return int(np.round((end - start) / step))
 
     @property
     def frog_step_fs(self):
