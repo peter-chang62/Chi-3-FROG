@@ -70,6 +70,7 @@ class FrogTab:
             self.event_stop_frog,
             self._x_encoder_step,
             self._N_steps,
+            self.T0_um,
         )
         self.worker_frog.moveToThread(self.thread_frog)
         self.thread_frog.started.connect(self.worker_frog.loop)
