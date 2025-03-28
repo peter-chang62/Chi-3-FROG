@@ -17,6 +17,13 @@ um = 1e-6
 mm = 1e-3
 
 
+def create_curve(color="b", width=2, x=None, y=None):
+    curve = pg.PlotDataItem(pen=pg.mkPen(color=color, width=width))
+    if (x is not None) and (y is not None):
+        curve.setData(x, y)
+    return curve
+
+
 class FrogTab:
     def __init__(self, ui, tab_spectrometer):
         ui: Ui_MainWindow
@@ -35,7 +42,9 @@ class FrogTab:
         self.im = pg.ImageItem()
         self._im_transform = QTransform()
         self.ui.gv_frog.plot_item.addItem(self.im)
-        self.marginal_plot = self.ui.gv_frog.getView().getAxis("bottom")
+        self.plot_item_marginal = self.ui.gv_frog.getView()
+        self.curve_marginal = create_curve("w")
+        self.plot_item_marginal.addItem(self.curve_marginal)
 
     def closeEvent(self, event):
         pass
@@ -280,7 +289,7 @@ class FrogTab:
         self._s_array[: step + 1] = s_array
         data = self.ui.gv_frog.roi.getArrayRegion(s_array, self.im)
         marginal = np.sum(data, axis=0)
-        self.marginal_plot.setData(marginal)
+        self.curve_marginal.setData(t_array, marginal)
 
         # self.ui.gv_frog.setImage(
         #     s_array, pos=[t_array[0], self.spectrometer.wl[0]], scale=scale
