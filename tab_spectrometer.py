@@ -6,7 +6,7 @@ import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
-from tab_frog import FrogTab
+# from tab_frog import FrogTab
 
 
 fs = 1e-15
@@ -63,7 +63,7 @@ class SpectrometerTab:
 
         self._initialized_hardware = True
         self.create_threads_workers()
-        self.tab_frog: FrogTab
+        # self.tab_frog: FrogTab
         self.tab_frog.create_threads_workers()
 
         self.read_and_update_current_stage_position()
