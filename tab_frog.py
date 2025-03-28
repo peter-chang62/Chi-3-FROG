@@ -38,12 +38,14 @@ class FrogTab:
 
         self.im = pg.ImageItem()
         self._transform_im = QTransform()
-        self.ui.gv_frog.addItem(self.im)
+        self._plot_item = self.ui.gv_frog.addPlot()
+        self._plot_item.addItem(self.im)
 
     def closeEvent(self, event):
-        if self.thread_frog.isRunning():
-            self.thread_frog.quit()
-            self.thread_frog.wait()
+        if self._initialized_hardware:
+            if self.thread_frog.isRunning():
+                self.thread_frog.quit()
+                self.thread_frog.wait()
 
     def set_validators(self):
         ui = self.ui
