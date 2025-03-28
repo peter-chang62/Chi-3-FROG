@@ -1,4 +1,5 @@
 from qt_designer.form import Ui_MainWindow
+
 # from tab_spectrometer import SpectrometerTab
 import threading
 from PyQt5 import QtCore, QtGui
@@ -234,8 +235,8 @@ class FrogTab:
         self.start_frog_event.clear()
         self.thread_frog.start()
 
-    def slot_frog_update(self, step, pos_um, s):
-        self.curve_spectrum.setData(self.spectrometer.wl, s)
+    def slot_frog_update(self, step, pos_um, s_array):
+        self.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
         self.ui.progbar_frog.setValue(
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
@@ -259,6 +260,9 @@ class WorkerFrogStepScan(QtCore.QObject):
         self._x_encoder_step = x_encoder_step
         self.N_steps = N_steps
 
+        self._s_array = np.zeros([N_steps, spectrometer.wl.size])
+        self._s = np.zeros(spectrometer.wl.size)
+
     def loop(self):
         step = 0
         self.stage.open_port()
@@ -275,7 +279,10 @@ class WorkerFrogStepScan(QtCore.QObject):
                 (x_encoder,) = struct.unpack("l", msg)
                 x = x_encoder / self.stage._max_pos * self.stage._max_range
                 x *= mm / um
-                self.progress.emit(step, x, np.asarray(self.spec.spectrum))
+
+                self._s[:] = self.spec.spectrum
+                self._s_array[step] = self._s[:]
+                self.progress.emit(step, x, self._s_array[: step + 1])
 
                 step += 1
         finally:
