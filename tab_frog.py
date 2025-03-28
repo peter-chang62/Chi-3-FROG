@@ -217,6 +217,7 @@ class FrogTab:
 
         self.worker_frog._x_encoder_step = self._x_encoder_step
         self.worker_frog.N_steps = self._N_steps
+        self.worker_frog.T0_um = self.T0_um
 
         self.tab_spectrometer.slot_pb_absolute_move(
             target_pos_encoder=self._x_encoder_start
