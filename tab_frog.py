@@ -244,6 +244,7 @@ class FrogTab:
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
 
         # set the frog plot axis limits
+        self._transform_im = QTransform()
         self._transform_im.translate(self.frog_start_fs, self.spectrometer.wl[0])
         x = [self.frog_start_fs, self.frog_end_fs]
         y = self.spectrometer.wl
