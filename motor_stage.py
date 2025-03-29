@@ -39,6 +39,7 @@ class ZaberStage:
         self._cmd_move_relative = 21
         self._cmd_move_at_constant_speed = 22
         self._cmd_stop = 23
+        self._cmd_set_target_speed = 42
         self._cmd_return_status = 54
         self._cmd_return_current_position = 60
 
@@ -92,6 +93,10 @@ class ZaberStage:
     @_autoconnect
     def stop(self):
         self.send_message(self._cmd_stop)
+
+    @_autoconnect
+    def set_target_speed(self, vel):
+        self.send_message(self._cmd_set_target_speed, vel)
 
     @_autoconnect
     def return_current_position(self):

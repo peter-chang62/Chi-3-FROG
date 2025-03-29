@@ -10,11 +10,14 @@ from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
+import time
 
 
 fs = 1e-15
 um = 1e-6
 mm = 1e-3
+
+ns = 1e-9
 
 
 def create_curve(color="b", width=2, x=None, y=None):
@@ -273,7 +276,7 @@ class FrogTab:
             int(np.round(step * 100 / self.worker_frog.N_steps))
         )
         # update the spectrum in the spectrometer tab
-        self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
+        # self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
 
         # update the lcd display in the spectrometer tab
         t_fs = t_array[-1]
@@ -283,7 +286,7 @@ class FrogTab:
         # update the frog image
         self.im.setImage(s_array)
 
-        if step > 0:  # needs more than one point
+        if step > 0:  # the plot needs more than one point
             marginal = np.sum(s_array, axis=1)
             self.curve.setData(t_array, marginal)
 
@@ -349,3 +352,113 @@ class WorkerFrogStepScan(QtCore.QObject):
         self.stage.close_port()
         self.stop_event.clear()
         self.finished.emit()
+
+
+class WorkerFrogContinuousScan(QtCore.QObject):
+    progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
+        super().__init__()
+        spectrometer: StellarnetBlueWave
+        stage: ZaberStage
+        stop_event: threading.Event
+
+        self.spec = spectrometer
+        self.stage = stage
+        self.stop_event = stop_event
+        self._x_encoder_end = x_encoder_step * N_steps
+        self._N_steps = N_steps
+
+        self._s = np.zeros(spectrometer.wl.size)
+        self.T0_um = T0_um
+
+        self.speed = (
+            self._x_encoder_step / 200e-3
+        )  # target speed in microsteps per second
+
+        self.stage_at_end_event = threading.Event()
+        self.thread = QtCore.QThread()
+        self.worker = WorkerWaitForStageEnd(
+            self.stage,
+            self._x_encoder_end,
+            self.speed * 1.6384,
+            self.stage_at_end_event,
+        )
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.started.connect(self.loop)
+        self.worker.finished.connect(self.thread_started.quit)
+
+    def start(self):
+        self.thread.start()
+
+    def loop(self):
+        step = 0
+        try:
+            while not self.stage_at_end_event.is_set():
+                if self.stop_event.is_set():
+                    self.exit()
+                if step == 0:
+                    t = time.perf_counter_ns()
+                    interval = 0
+                else:
+                    interval = time.perf_counter_ns() - t
+
+                s = self.spec.spectrum
+
+                x = (
+                    self.speed
+                    * interval
+                    / self.stage._max_pos
+                    * self.stage._max_range
+                    * mm
+                )
+                t_fs = (2 * x / c) / fs
+                self.progress.emit(t_fs, s)
+
+                step += 1
+                t = time.perf_counter_ns()
+
+        finally:
+            self.exit()
+
+    def exit(self):
+        self.thread.quit()
+        self.thread.wait()
+
+        self.stage.close_port()
+        self.stage.set_target_speed(153600)
+
+        self.stop_event.clear()
+        self.stage_at_end_event.clear()
+
+
+class WorkerWaitForStageEnd(QtCore.QObject):
+    started = QtCore.pyqtSignal()
+    finished = QtCore.pyqtSignal()
+
+    def __init__(self, stage, x_encoder_end, x_encoder_speed, stage_at_end_event):
+        super.__init__()
+
+        stage: ZaberStage
+        x_encoder_end: int
+        stage_at_end_event: threading.Event()
+        self.stage = stage
+        self._x_encoder_end = x_encoder_end
+        self._x_encoder_speed = x_encoder_speed
+        self.stage_at_end_event = stage_at_end_event
+
+    def run(self):
+        self.stage.open_port()
+
+        self.stage.send_message(self.stage._cmd_set_target_speed, self._x_encoder_speed)
+        cmd_num, msg = self.stage.receive_message()
+
+        self.stage.send_message(self.stage._cmd_move_relative, self._x_encoder_end)
+
+        self.started.emit()
+        cmd_num, msg = self.stage.receive_message()
+        self.stage_at_end_event.set()
+
+        self.close_port()
