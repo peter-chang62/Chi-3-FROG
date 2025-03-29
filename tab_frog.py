@@ -430,7 +430,7 @@ class WorkerFrogStepScan(QtCore.QObject):
 
 
 class WorkerFrogContinuousScan(QtCore.QObject):
-    progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
+    progress = QtCore.pyqtSignal(float, np.ndarray)
     finished = QtCore.pyqtSignal()
 
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps):
