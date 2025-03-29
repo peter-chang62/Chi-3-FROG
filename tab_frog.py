@@ -484,11 +484,13 @@ class WorkerFrogContinuousScan(QtCore.QObject):
                     interval = 0
                 else:
                     interval = time.perf_counter_ns() - t
+                interval *= ns
 
                 s = self.spec.spectrum
 
                 x = (
-                    self.speed
+                    self._x_encoder_speed
+                    / 1.6384
                     * interval
                     / self.stage._max_pos
                     * self.stage._max_range
