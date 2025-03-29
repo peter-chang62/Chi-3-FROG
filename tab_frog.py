@@ -36,6 +36,7 @@ class FrogTab:
         self.set_validators()
         self.connect_line_edits_signals_slots()
         self.connect_push_buttons_signals_slots()
+        self.connect_radio_buttons_signals_slots()
 
         self.ui.progbar_frog.setValue(0)
 
@@ -80,7 +81,18 @@ class FrogTab:
         self.slot_le_frog_step_fs()
 
     def connect_push_buttons_signals_slots(self):
-        self.ui.pb_frog.clicked.connect(self.slot_pb_frog)
+        if self.ui.rb_step_scan.isChecked():
+            self.ui.pb_frog.clicked.connect(self.slot_pb_frog)
+        else:
+            self.ui.pb_frog.clicked.connect(self.slot_pb_frog_continuous)
+
+    def connect_radio_buttons_signals_slots(self):
+        self.ui.rb_step_scan.toggled.connect(self.slot_rb)
+        self.ui.rb_continuous_scan.toggled.connect(self.slot_rb)
+
+    def slot_rb(self):
+        self.ui.pb_frog.clicked.disconnect()
+        self.connect_push_buttons_signals_slots()
 
     def create_threads_workers(self):
         self.event_stop_frog = threading.Event()
@@ -99,6 +111,21 @@ class FrogTab:
         self.worker_frog.progress.connect(self.slot_frog_update)
         self.worker_frog.finished.connect(self.thread_frog.quit)
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog)
+
+        self.event_stop_frog_cont = threading.Event()
+        self.thread_frog_cont = QtCore.QThread()
+        self.worker_frog_cont = WorkerFrogContinuousScan(
+            self.spectrometer,
+            self.stage,
+            self.event_stop_frog_cont,
+            self._x_encoder_step,
+            self._N_steps,
+        )
+        self.worker_frog_cont.moveToThread(self.thread_frog_cont)
+        self.thread_frog_cont.started.connect(self.worker_frog_cont.start)
+        self.worker_frog_cont.progress.connect(self.slot_frog_cont_update)
+        self.worker_frog_cont.finished.connect(self.thread_frog_cont.quit)
+        self.tab_spectrometer.worker_stage.finished.connect(self.start_frog_cont)
 
     @property
     def T0_um(self):
@@ -239,7 +266,7 @@ class FrogTab:
 
         # update parameters that may have changed since the application started
         self.worker_frog._x_encoder_step = self._x_encoder_step
-        self.worker_frog.N_steps = self._N_steps
+        self.worker_frog._N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
 
         # initialize arrays
@@ -263,6 +290,32 @@ class FrogTab:
         )
         self.start_frog_event.set()
 
+    def slot_pb_frog_continuous(self):
+        if not self._initialized_hardware:
+            self.ui.tb_frog_error.setPlainText("no hardware initialized")
+            return
+
+        if self.thread_frog.isRunning():
+            if not self.event_stop_frog.is_set():
+                self.event_stop_frog.set()
+            else:
+                self.ui.tb_frog_error.setPlainText("wait for FROG to stop")
+            return
+
+        if self.tab_spectrometer.thread_stage.isRunning():
+            if not self.tab_spectrometer.event_stop_stage.is_set():
+                self.tab_spectrometer.event_stop_stage.set()
+            else:
+                self.ui.tb_frog_error.setPlainText("wait for stage to stop")
+            return
+
+        if self.tab_spectrometer.thread_spec.isRunning():
+            if not self.tab_spectrometer.event_stop_spec.is_set():
+                self.tab_spectrometer.thread_spec.quit()
+                self.tab_spectrometer.thread_spec.wait()
+
+        self.worker_frog_cont._x_encoder_step = self._x_encoder_step
+
     def start_frog(self):
         if not self.start_frog_event.is_set():
             return
@@ -270,11 +323,15 @@ class FrogTab:
         self.start_frog_event.clear()
         self.thread_frog.start()
 
+    def start_frog_cont(self):
+        pass
+
     def slot_frog_update(self, step, pos_um, t_array, s_array):
         # update the progress bar
         self.ui.progbar_frog.setValue(
-            int(np.round(step * 100 / self.worker_frog.N_steps))
+            int(np.round(step * 100 / self.worker_frog._N_steps))
         )
+
         # update the spectrum in the spectrometer tab
         # self.tab_spectrometer.curve_spectrum.setData(self.spectrometer.wl, s_array[-1])
 
@@ -294,6 +351,9 @@ class FrogTab:
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
 
+    def slot_frog_cont_update(self):
+        pass
+
 
 class WorkerFrogStepScan(QtCore.QObject):
     progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
@@ -310,7 +370,7 @@ class WorkerFrogStepScan(QtCore.QObject):
         self.stop_event = stop_event
 
         self._x_encoder_step = x_encoder_step
-        self.N_steps = N_steps
+        self._N_steps = N_steps
 
         self._s_array = np.zeros([N_steps, spectrometer.wl.size])
         self._t_array = np.zeros(N_steps)
@@ -322,7 +382,7 @@ class WorkerFrogStepScan(QtCore.QObject):
         step = 0
         self.stage.open_port()
         try:
-            while step < self.N_steps:
+            while step < self._N_steps:
                 if self.stop_event.is_set():
                     self.exit()
                     return
@@ -358,7 +418,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
     progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
+    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps):
         super().__init__()
         spectrometer: StellarnetBlueWave
         stage: ZaberStage
@@ -367,22 +427,15 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.spec = spectrometer
         self.stage = stage
         self.stop_event = stop_event
-        self._x_encoder_end = x_encoder_step * N_steps
+        self._x_encoder_step = x_encoder_step
         self._N_steps = N_steps
-
-        self._s = np.zeros(spectrometer.wl.size)
-        self.T0_um = T0_um
-
-        self.speed = (
-            self._x_encoder_step / 200e-3
-        )  # target speed in microsteps per second
 
         self.stage_at_end_event = threading.Event()
         self.thread = QtCore.QThread()
         self.worker = WorkerWaitForStageEnd(
             self.stage,
             self._x_encoder_end,
-            self.speed * 1.6384,
+            self._x_encoder_speed * 1.6384,
             self.stage_at_end_event,
         )
         self.worker.moveToThread(self.thread)
@@ -390,7 +443,19 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.worker.started.connect(self.loop)
         self.worker.finished.connect(self.thread_started.quit)
 
+    @property
+    def _x_encoder_end(self):
+        return self._x_encoder_step * self._N_steps
+
+    @property
+    def _x_encoder_speed(self):
+        # target speed in microsteps per second
+        speed = self._x_encoder_step / 200e-3
+        return speed
+
     def start(self):
+        self.worker._x_encoder_end = self._x_encoder_end
+        self.worker._x_encoder_speed = self._x_encoder_speed
         self.thread.start()
 
     def loop(self):
