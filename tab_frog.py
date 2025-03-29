@@ -504,7 +504,7 @@ class WorkerWaitForStageEnd(QtCore.QObject):
     finished = QtCore.pyqtSignal()
 
     def __init__(self, stage, x_encoder_end, x_encoder_speed, stage_at_end_event):
-        super.__init__()
+        super().__init__()
 
         stage: ZaberStage
         x_encoder_end: int
