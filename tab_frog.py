@@ -441,7 +441,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
         self.worker.started.connect(self.loop)
-        self.worker.finished.connect(self.thread_started.quit)
+        self.worker.finished.connect(self.thread.quit)
 
     @property
     def _x_encoder_end(self):
