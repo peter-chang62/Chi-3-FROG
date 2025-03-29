@@ -113,6 +113,7 @@ class FrogTab:
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog)
 
         self.event_stop_frog_cont = threading.Event()
+        self.start_frog_cont_event = threading.Event()
         self.thread_frog_cont = QtCore.QThread()
         self.worker_frog_cont = WorkerFrogContinuousScan(
             self.spectrometer,
@@ -314,7 +315,17 @@ class FrogTab:
                 self.tab_spectrometer.thread_spec.quit()
                 self.tab_spectrometer.thread_spec.wait()
 
+        # update parameters that may have changed since the application started
         self.worker_frog_cont._x_encoder_step = self._x_encoder_step
+        self.worker_frog_cont._N_steps = self._N_steps
+
+        # skip the image set up for now
+
+        # move to start and set frog start threading event
+        self.tab_spectrometer.slot_pb_absolute_move(
+            target_pos_encoder=self._x_encoder_start
+        )
+        self.start_frog_cont_event.set()
 
     def start_frog(self):
         if not self.start_frog_event.is_set():
@@ -324,7 +335,11 @@ class FrogTab:
         self.thread_frog.start()
 
     def start_frog_cont(self):
-        pass
+        if not self.start_frog_cont_event.is_set():
+            return
+
+        self.start_frog_cont_event.clear()
+        self.thread_frog_cont.start()
 
     def slot_frog_update(self, step, pos_um, t_array, s_array):
         # update the progress bar
@@ -352,7 +367,7 @@ class FrogTab:
         self._t_array[: step + 1] = t_array[:]
 
     def slot_frog_cont_update(self):
-        pass
+        print("slot triggered")
 
 
 class WorkerFrogStepScan(QtCore.QObject):
