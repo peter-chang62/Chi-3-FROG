@@ -450,7 +450,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.worker = WorkerWaitForStageEnd(
             self.stage,
             self._x_encoder_end,
-            self._x_encoder_speed * 1.6384,
+            self._x_encoder_speed,
             self.stage_at_end_event,
         )
         self.worker.moveToThread(self.thread)
@@ -466,7 +466,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
     def _x_encoder_speed(self):
         # target speed in microsteps per second
         speed = self._x_encoder_step / 200e-3
-        return speed
+        return int(np.round(speed * 1.6384))
 
     def start(self):
         self.worker._x_encoder_end = self._x_encoder_end
