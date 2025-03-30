@@ -128,6 +128,23 @@ class FrogTab:
         self.worker_frog_cont.finished.connect(self.thread_frog_cont.quit)
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog_cont)
 
+        self.stage_at_end_event = threading.Event()
+        self._thread_frog_cont = QtCore.QThread()
+        self._worker_frog_cont = _WorkerWaitForStageEnd(
+            self.stage,
+            self.worker_frog_cont._x_encoder_end,
+            self.worker_frog_cont._x_encoder_speed,
+            self.stage_at_end_event,
+        )
+        self._worker_frog_cont.moveToThread(self._thread_frog_cont)
+        self._thread_frog_cont.started.connect(self._worker_frog_cont.run)
+        self._worker_frog_cont.started.connect(self.worker_frog_cont.loop)
+        self._worker_frog_cont.finished.connect(self._thread_frog_cont.quit)
+
+        self.worker_frog_cont.thread = self._thread_frog_cont
+        self.worker_frog_cont.worker = self._worker_frog_cont
+        self.worker_frog_cont.stage_at_end_event = self.stage_at_end_event
+
     @property
     def T0_um(self):
         return self.tab_spectrometer.T0_um
@@ -445,18 +462,18 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self._x_encoder_step = x_encoder_step
         self._N_steps = N_steps
 
-        self.stage_at_end_event = threading.Event()
-        self.thread = QtCore.QThread()
-        self.worker = WorkerWaitForStageEnd(
-            self.stage,
-            self._x_encoder_end,
-            self._x_encoder_speed,
-            self.stage_at_end_event,
-        )
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.started.connect(self.loop)
-        self.worker.finished.connect(self.thread.quit)
+        # self.stage_at_end_event = threading.Event()
+        # self.thread = QtCore.QThread()
+        # self.worker = _WorkerWaitForStageEnd(
+        #     self.stage,
+        #     self._x_encoder_end,
+        #     self._x_encoder_speed,
+        #     self.stage_at_end_event,
+        # )
+        # self.worker.moveToThread(self.thread)
+        # self.thread.started.connect(self.worker.run)
+        # self.worker.started.connect(self.loop)
+        # self.worker.finished.connect(self.thread.quit)
 
     @property
     def _x_encoder_end(self):
@@ -510,13 +527,13 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.thread.wait()
 
         self.stage.close_port()
-        self.stage.set_target_speed(153600)
+        self.stage.set_target_speed(16384)
 
         self.stop_event.clear()
         self.stage_at_end_event.clear()
 
 
-class WorkerWaitForStageEnd(QtCore.QObject):
+class _WorkerWaitForStageEnd(QtCore.QObject):
     started = QtCore.pyqtSignal()
     finished = QtCore.pyqtSignal()
 
@@ -543,4 +560,4 @@ class WorkerWaitForStageEnd(QtCore.QObject):
         cmd_num, msg = self.stage.receive_message()
         self.stage_at_end_event.set()
 
-        self.close_port()
+        self.stage.close_port()
