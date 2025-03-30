@@ -506,7 +506,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
             self.exit()
 
     def exit(self):
-        self.thread.quit()
+        # self.thread.quit()
         self.thread.wait()
 
         self.stage.close_port()
@@ -545,4 +545,7 @@ class WorkerWaitForStageEnd(QtCore.QObject):
         cmd_num, msg = self.stage.receive_message()
         self.stage_at_end_event.set()
 
-        self.close_port()
+        self.exit()
+
+    def exit(self):
+        self.finished.emit()
