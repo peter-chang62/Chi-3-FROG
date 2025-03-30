@@ -390,9 +390,9 @@ class WorkerFrogStepScan(QtCore.QObject):
 
     def loop(self):
         step = 0
-        self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
+        self._s_array = np.zeros([self._N_steps, self.spec.wl.size])
         self._t_array = np.zeros(self._N_steps)
-        self._s = np.zeros(self.spectrometer.wl.size)
+        self._s = np.zeros(self.spec.wl.size)
 
         self.stage.open_port()
         try:
