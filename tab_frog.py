@@ -128,23 +128,6 @@ class FrogTab:
         self.worker_frog_cont.finished.connect(self.thread_frog_cont.quit)
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog_cont)
 
-        # self.stage_at_end_event = threading.Event()
-        # self._thread_frog_cont = QtCore.QThread()
-        # self._worker_frog_cont = _WorkerWaitForStageEnd(
-        #     self.stage,
-        #     self.worker_frog_cont._x_encoder_end,
-        #     self.worker_frog_cont._x_encoder_speed,
-        #     self.stage_at_end_event,
-        # )
-        # self._worker_frog_cont.moveToThread(self._thread_frog_cont)
-        # self._thread_frog_cont.started.connect(self._worker_frog_cont.run)
-        # self._worker_frog_cont.started.connect(self.worker_frog_cont.loop)
-        # self._worker_frog_cont.finished.connect(self._thread_frog_cont.quit)
-
-        # self.worker_frog_cont.thread = self._thread_frog_cont
-        # self.worker_frog_cont.worker = self._worker_frog_cont
-        # self.worker_frog_cont.stage_at_end_event = self.stage_at_end_event
-
     @property
     def T0_um(self):
         return self.tab_spectrometer.T0_um
@@ -336,9 +319,6 @@ class FrogTab:
         self.worker_frog_cont._x_encoder_step = self._x_encoder_step
         self.worker_frog_cont._N_steps = self._N_steps
 
-        # create thread workers for worker_frog_cont
-        self.worker_frog_cont.create_threads_workers()
-
         # skip the image set up for now
 
         # move to start and set frog start threading event
@@ -465,10 +445,9 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self._x_encoder_step = x_encoder_step
         self._N_steps = N_steps
 
-    def create_threads_workers(self):
         self.stage_at_end_event = threading.Event()
         self.thread = QtCore.QThread()
-        self.worker = _WorkerWaitForStageEnd(
+        self.worker = WorkerWaitForStageEnd(
             self.stage,
             self._x_encoder_end,
             self._x_encoder_speed,
@@ -531,13 +510,13 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.thread.wait()
 
         self.stage.close_port()
-        self.stage.set_target_speed(16384)
+        self.stage.set_target_speed(153600)
 
         self.stop_event.clear()
         self.stage_at_end_event.clear()
 
 
-class _WorkerWaitForStageEnd(QtCore.QObject):
+class WorkerWaitForStageEnd(QtCore.QObject):
     started = QtCore.pyqtSignal()
     finished = QtCore.pyqtSignal()
 
@@ -564,4 +543,4 @@ class _WorkerWaitForStageEnd(QtCore.QObject):
         cmd_num, msg = self.stage.receive_message()
         self.stage_at_end_event.set()
 
-        self.stage.close_port()
+        self.close_port()
