@@ -20,6 +20,12 @@ class SettingsTab:
         self.set_validators()
         self.connect_line_edits_signals_slots()
 
+    def set_line_edits_based_on_spectrometer(self):
+        self.ui.le_integration_time.setText(str(self.integration_time))
+        self.ui.le_n_avg.setText(str(self.n_avg))
+        self.ui.le_x_smooth.setText(str(self.x_smooth))
+        self.ui.le_x_timing.setText(str(self.x_timing))
+
     def set_validators(self):
         self.ui.le_integration_time.setValidator(QtGui.QIntValidator(5, 1000))
         self.ui.le_n_avg.setValidator(QtGui.QIntValidator(1, 1000))
@@ -89,6 +95,7 @@ class SettingsTab:
             return
 
         self.integration_time = int(self.ui.le_integration_time.text())
+        self.ui.tb_settings_error.setPlainText("updated integration time")
 
     def slot_le_n_avg(self):
         if not self._initialized_hardware:
@@ -104,6 +111,7 @@ class SettingsTab:
             return
 
         self.n_avg = int(self.ui.le_n_avg.text())
+        self.ui.tb_settings_error.setPlainText("updated number of averages")
 
     def slot_le_x_smooth(self):
         if not self._initialized_hardware:
@@ -119,6 +127,7 @@ class SettingsTab:
             return
 
         self.x_smooth = int(self.ui.le_x_smooth.text())
+        self.ui.tb_settings_error.setPlainText("updated boxcar smooth window")
 
     def slot_le_x_timing(self):
         if not self._initialized_hardware:
@@ -134,3 +143,4 @@ class SettingsTab:
             return
 
         self.x_timing = int(self.ui.le_x_timing.text())
+        self.ui.tb_settings_error.setPlainText("updated XTiming resolution")

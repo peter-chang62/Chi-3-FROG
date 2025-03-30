@@ -64,8 +64,10 @@ class SpectrometerTab:
 
         self._initialized_hardware = True
         self.create_threads_workers()
+
         # self.tab_frog: FrogTab
         self.tab_frog.create_threads_workers()
+        self.tab_settings.set_line_edits_based_on_spectrometer()
 
         self.read_and_update_current_stage_position()
 
@@ -361,6 +363,7 @@ class SpectrometerTab:
                 self.event_stop_spec.set()
 
         else:
+            # can happen in the scenario of long spectrometer integration times
             self.ui.tb_error.setPlainText("wait for spectrometer to stop")
             return
 
