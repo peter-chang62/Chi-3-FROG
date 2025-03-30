@@ -11,6 +11,9 @@ class StellarnetBlueWave:
 
         self._ext_trig = False
 
+        # the spectrometer does not save settings once you call spectrometer.reset()
+        self.integration_time = 5
+
     def initialize(self):
         """
         fetch the spectrometer
