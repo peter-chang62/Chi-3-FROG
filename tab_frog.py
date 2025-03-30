@@ -128,22 +128,22 @@ class FrogTab:
         self.worker_frog_cont.finished.connect(self.thread_frog_cont.quit)
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog_cont)
 
-        self.stage_at_end_event = threading.Event()
-        self._thread_frog_cont = QtCore.QThread()
-        self._worker_frog_cont = _WorkerWaitForStageEnd(
-            self.stage,
-            self.worker_frog_cont._x_encoder_end,
-            self.worker_frog_cont._x_encoder_speed,
-            self.stage_at_end_event,
-        )
-        self._worker_frog_cont.moveToThread(self._thread_frog_cont)
-        self._thread_frog_cont.started.connect(self._worker_frog_cont.run)
-        self._worker_frog_cont.started.connect(self.worker_frog_cont.loop)
-        self._worker_frog_cont.finished.connect(self._thread_frog_cont.quit)
+        # self.stage_at_end_event = threading.Event()
+        # self._thread_frog_cont = QtCore.QThread()
+        # self._worker_frog_cont = _WorkerWaitForStageEnd(
+        #     self.stage,
+        #     self.worker_frog_cont._x_encoder_end,
+        #     self.worker_frog_cont._x_encoder_speed,
+        #     self.stage_at_end_event,
+        # )
+        # self._worker_frog_cont.moveToThread(self._thread_frog_cont)
+        # self._thread_frog_cont.started.connect(self._worker_frog_cont.run)
+        # self._worker_frog_cont.started.connect(self.worker_frog_cont.loop)
+        # self._worker_frog_cont.finished.connect(self._thread_frog_cont.quit)
 
-        self.worker_frog_cont.thread = self._thread_frog_cont
-        self.worker_frog_cont.worker = self._worker_frog_cont
-        self.worker_frog_cont.stage_at_end_event = self.stage_at_end_event
+        # self.worker_frog_cont.thread = self._thread_frog_cont
+        # self.worker_frog_cont.worker = self._worker_frog_cont
+        # self.worker_frog_cont.stage_at_end_event = self.stage_at_end_event
 
     @property
     def T0_um(self):
@@ -336,6 +336,9 @@ class FrogTab:
         self.worker_frog_cont._x_encoder_step = self._x_encoder_step
         self.worker_frog_cont._N_steps = self._N_steps
 
+        # create thread workers for worker_frog_cont
+        self.worker_frog_cont.create_threads_workers()
+
         # skip the image set up for now
 
         # move to start and set frog start threading event
@@ -462,18 +465,19 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self._x_encoder_step = x_encoder_step
         self._N_steps = N_steps
 
-        # self.stage_at_end_event = threading.Event()
-        # self.thread = QtCore.QThread()
-        # self.worker = _WorkerWaitForStageEnd(
-        #     self.stage,
-        #     self._x_encoder_end,
-        #     self._x_encoder_speed,
-        #     self.stage_at_end_event,
-        # )
-        # self.worker.moveToThread(self.thread)
-        # self.thread.started.connect(self.worker.run)
-        # self.worker.started.connect(self.loop)
-        # self.worker.finished.connect(self.thread.quit)
+    def create_threads_workers(self):
+        self.stage_at_end_event = threading.Event()
+        self.thread = QtCore.QThread()
+        self.worker = _WorkerWaitForStageEnd(
+            self.stage,
+            self._x_encoder_end,
+            self._x_encoder_speed,
+            self.stage_at_end_event,
+        )
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run)
+        self.worker.started.connect(self.loop)
+        self.worker.finished.connect(self.thread.quit)
 
     @property
     def _x_encoder_end(self):
