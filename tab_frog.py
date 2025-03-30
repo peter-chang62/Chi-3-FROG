@@ -515,6 +515,8 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.stop_event.clear()
         self.stage_at_end_event.clear()
 
+        self.finished.emit()
+
 
 class WorkerWaitForStageEnd(QtCore.QObject):
     started = QtCore.pyqtSignal()
