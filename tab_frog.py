@@ -510,7 +510,7 @@ class WorkerFrogContinuousScan(QtCore.QObject):
         self.thread.wait()
 
         self.stage.close_port()
-        self.stage.set_target_speed(153600)
+        self.stage.set_target_speed(16384)
 
         self.stop_event.clear()
         self.stage_at_end_event.clear()
