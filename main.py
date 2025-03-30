@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from qt_designer.form import Ui_MainWindow
 from tab_spectrometer import SpectrometerTab
 from tab_frog import FrogTab
+from tab_settings import SettingsTab
 
 fs = 1e-15
 um = 1e-6
@@ -18,6 +19,7 @@ class MainWindow(QMainWindow):
         self.tab_spectrometer = SpectrometerTab(self.ui)
         self.tab_frog = FrogTab(self.ui, self.tab_spectrometer)
         self.tab_spectrometer.tab_frog = self.tab_frog
+        self.tab_settings = SettingsTab(self.ui, self.tab_spectrometer, self.tab_frog)
 
     def closeEvent(self, event):
         self.tab_frog.closeEvent(event)

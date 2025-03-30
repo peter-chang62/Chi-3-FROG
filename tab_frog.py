@@ -10,14 +10,11 @@ from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
-import time
 
 
 fs = 1e-15
 um = 1e-6
 mm = 1e-3
-
-ns = 1e-9
 
 
 def create_curve(color="b", width=2, x=None, y=None):

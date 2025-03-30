@@ -1,18 +1,40 @@
-import pyqtgraph as pg
+# from PyQt5.QtWidgets import QLineEdit
+# from PyQt5.QtGui import QIntValidator
+# from PyQt5.QtCore import Qt
 
 
-class ImageView(pg.ImageView):
-    """
-    it's hard to change the viewbox after the fact so i just want to have an
-    imageview item that's initialized with imageview(plot_item)
-    """
+# class RangeLineEdit(QLineEdit):
+#     def __init__(self, parent=None):
+#         super().__init__(parent)
 
-    def __init__(self, *args, **kwargs):
-        self.plot_item = pg.PlotItem()
-        # plot_item.setLabel("left", "Y-axis")
-        # plot_item.setLabel("bottom", "X-axis")
+#     def set_range(self, min_value, max_value):
+#         self.min_value = min_value
+#         self.max_value = max_value
+#         self.validator = QIntValidator(min_value, max_value)
+#         self.setValidator(self.validator)
 
-        super().__init__(view=self.plot_item)
+#     def keyPressEvent(self, event):
+#         # Handle backspace and delete keys, which should always work
+#         if event.key() in [
+#             Qt.Key_Backspace,
+#             Qt.Key_Delete,
+#             Qt.Key_Left,
+#             Qt.Key_Right,
+#             Qt.Key_Up,
+#             Qt.Key_Down,
+#         ]:
+#             super().keyPressEvent(event)
+#             return
 
-        self.ui.histogram.hide()
-        self.ui.menuBtn.hide()
+#         # Get the current input text and the new character
+#         current_text = self.text()
+#         new_text = current_text + event.text()
+
+#         # Check if the new input is valid and within range
+#         try:
+#             value = float(new_text)
+#             if self.min_value <= value <= self.max_value:
+#                 super().keyPressEvent(event)  # Allow the key press event if valid
+#         except ValueError:
+#             # Ignore the event if the input is not a valid number (e.g., letters)
+#             pass
