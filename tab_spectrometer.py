@@ -95,9 +95,15 @@ class SpectrometerTab:
     def closeEvent(self, event):
         if self._initialized_hardware:
             if self.thread_spec.isRunning():
+                self.event_stop_spec.set()
                 self.thread_spec.quit()
                 self.thread_spec.wait()
             self.spectrometer.reset()
+
+            if self.thread_stage.isRunning():
+                self.event_stop_stage.set()
+                self.thread_stage.quit()
+                self.thread_stage.wait()
 
     def set_validators(self):
         ui = self.ui
