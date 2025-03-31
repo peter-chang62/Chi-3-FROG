@@ -90,6 +90,7 @@ class FrogTab:
             self.spectrometer,
             self.stage,
             self.event_stop_frog,
+            self._x_encoder_start,
             self._x_encoder_step,
             self._N_steps,
             self.T0_um,
@@ -239,6 +240,7 @@ class FrogTab:
                 self.tab_spectrometer.thread_spec.wait()
 
         # update parameters that may have changed since the application started
+        self.worker_frog._x_encoder_start = self._x_encoder_start
         self.worker_frog._x_encoder_step = self._x_encoder_step
         self.worker_frog._N_steps = self._N_steps
         self.worker_frog.T0_um = self.T0_um
@@ -385,7 +387,16 @@ class WorkerFrogStepScan(QtCore.QObject):
     progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
     finished = QtCore.pyqtSignal()
 
-    def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
+    def __init__(
+        self,
+        spectrometer,
+        stage,
+        stop_event,
+        x_encoder_start,
+        x_encoder_step,
+        N_steps,
+        T0_um,
+    ):
         super().__init__()
         spectrometer: StellarnetBlueWave
         stage: KST201
@@ -395,6 +406,7 @@ class WorkerFrogStepScan(QtCore.QObject):
         self.stage = stage
         self.stop_event = stop_event
 
+        self._x_encoder_start = x_encoder_start
         self._x_encoder_step = x_encoder_step
         self._N_steps = N_steps
         self.T0_um = T0_um
@@ -426,7 +438,7 @@ class WorkerFrogStepScan(QtCore.QObject):
                 )
                 self.stage.write(write_buffer)
                 self.stage.ser.read(20)
-                x_encoder = self.T0_um + self._x_encoder_step * step
+                x_encoder = self._x_encoder_start + self._x_encoder_step * step
                 x = x_encoder / self.stage.ENC_CNT_MM
                 x *= mm / um
 
