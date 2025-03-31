@@ -309,7 +309,9 @@ class FrogTab:
         if filename == "":
             return
 
-        np.savez(filename, t_grid=t_grid, spectrogram=data)
+        np.savez(
+            filename, t_grid=t_grid, wl_grid=self.spectrometer.wl, spectrogram=data
+        )
 
 
 class WorkerFrogStepScan(QtCore.QObject):
