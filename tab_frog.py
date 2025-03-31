@@ -80,6 +80,7 @@ class FrogTab:
         self.ui.pb_save_frog.clicked.connect(self.slot_pb_save_frog)
 
     def create_threads_workers(self):
+        self._event_s_array_created = threading.Event()
         self.event_stop_frog = threading.Event()
         self.start_frog_event = threading.Event()
         self.thread_frog = QtCore.QThread()
@@ -259,6 +260,7 @@ class FrogTab:
             target_pos_encoder=self._x_encoder_start
         )
         self.start_frog_event.set()
+        self._event_s_array_created.set()
 
     def start_frog(self):
         if not self.start_frog_event.is_set():
@@ -301,13 +303,12 @@ class FrogTab:
             self.ui.tb_frog_error.setPlainText("no FROG data taken")
             return
 
-        try:
-            data = self._s_array
-            t_grid = self._t_array
-
-        except NameError:
+        if not self._event_s_array_created.is_set():
             self.ui.tb_frog_error.setPlainText("no FROG data taken")
             return
+
+        data = self._s_array
+        t_grid = self._t_array
 
         filename = QtWidgets.QFileDialog.getSaveFileName(caption="save FROG")[0]
         if filename == "":
