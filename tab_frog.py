@@ -299,6 +299,7 @@ class FrogTab:
                 return
         else:
             self.ui.tb_frog_error.setPlainText("no FROG data taken")
+            return
 
         try:
             data = self._s_array
