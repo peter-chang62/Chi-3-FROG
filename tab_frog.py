@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from scipy.constants import c
 import numpy as np
 from spectrometer import StellarnetBlueWave
-from motor_stage import ZaberStage
+from motor_stage_thorlabs import KST201
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
@@ -160,19 +160,19 @@ class FrogTab:
     @property
     def _x_encoder_start(self):
         x = self.frog_start_um * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        x_encoder = x * self.stage.ENC_CNT_MM
         return int(np.round(x_encoder))
 
     @property
     def _x_encoder_end(self):
         x = self.frog_end_um * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        x_encoder = x * self.stage.ENC_CNT_MM
         return int(np.round(x_encoder))
 
     @property
     def _x_encoder_step(self):
         x = self.frog_step_um * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        x_encoder = x * self.stage.ENC_CNT_MM
         return int(np.round(x_encoder))
 
     @property
@@ -388,7 +388,7 @@ class WorkerFrogStepScan(QtCore.QObject):
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
         super().__init__()
         spectrometer: StellarnetBlueWave
-        stage: ZaberStage
+        stage: KST201
         stop_event: threading.Event
 
         self.spec = spectrometer
@@ -412,13 +412,23 @@ class WorkerFrogStepScan(QtCore.QObject):
                     self.exit()
                     return
 
-                self.stage.send_message(
-                    self.stage._cmd_move_relative, self._x_encoder_step
+                # MGMSG_MOT_MOVE_RELATIVE
+                write_buffer = struct.pack(
+                    "<BBBBBBHl",
+                    0x48,
+                    0x04,
+                    0x06,
+                    0x00,
+                    self.dst | 0x80,
+                    self.src,
+                    0x0001,
+                    self._x_encoder_step,
                 )
-                cmd_num, msg = self.stage.receive_message()  # wait for step complete
-                (x_encoder,) = struct.unpack("l", msg)
-                x = x_encoder / self.stage._max_pos * self.stage._max_range
-                x *= mm / um  # convert to um
+                self.stage.write(write_buffer)
+                self.stage.ser.read(6)
+                x_encoder = self.T0_um + self._x_encoder_step * step
+                x = x_encoder / self.stage.ENC_CNT_MM
+                x *= mm / um
 
                 t_fs = np.round((2 * (x - self.T0_um) * um / c) / fs, 3)
                 self._t_array[step] = t_fs

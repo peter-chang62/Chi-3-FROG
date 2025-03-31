@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui
 from scipy.constants import c
 import numpy as np
 from spectrometer import StellarnetBlueWave
-from motor_stage import ZaberStage
+from motor_stage_thorlabs import KST201
 import pyqtgraph as pg
 
 # from tab_frog import FrogTab
@@ -54,7 +54,7 @@ class SpectrometerTab:
         # now fetch the stage
         try:
             port = self.ui.le_stage_com_port.text()
-            self.stage = ZaberStage(port)
+            self.stage = KST201(port)
             self.ui.tb_error.setPlainText("success")
         except Exception as e:
             self.ui.tb_error.setPlainText(str(e))
@@ -243,7 +243,7 @@ class SpectrometerTab:
 
         if target_pos_encoder is None:
             x = float(x) * um / mm  # convert to mm
-            x_encoder = x / self.stage._max_range * self.stage._max_pos
+            x_encoder = x * self.stage.ENC_CNT_MM
         else:
             x_encoder = target_pos_encoder
         self.stage.move_absolute(int(np.round(x_encoder)))
@@ -275,7 +275,7 @@ class SpectrometerTab:
             return
 
         x = float(x) * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        x_encoder = x * self.stage.ENC_CNT_MM
         self.stage.move_relative(int(np.round(-x_encoder)))
 
         self.thread_stage.start()
@@ -305,7 +305,7 @@ class SpectrometerTab:
             return
 
         x = float(x) * um / mm  # convert to mm
-        x_encoder = x / self.stage._max_range * self.stage._max_pos
+        x_encoder = x * self.stage.ENC_CNT_MM
         self.stage.move_relative(int(np.round(x_encoder)))
 
         self.thread_stage.start()
@@ -321,7 +321,7 @@ class SpectrometerTab:
             return
 
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
 
         self.slot_lcd_current_pos(x)
@@ -345,7 +345,7 @@ class SpectrometerTab:
             return
 
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
         self.T0_um = x
 
@@ -384,7 +384,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
     def __init__(self, interval, stage, stop_event):
         super().__init__()
 
-        stage: ZaberStage
+        stage: KST201
         self.stage = stage
         self.interval = interval
         self.x_encoder_previous = None
@@ -401,7 +401,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
     def slot_timeout(self):
         # get current stage position
         (x_encoder,) = self.stage.return_current_position()
-        x = x_encoder / self.stage._max_pos * self.stage._max_range
+        x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
         self.progress.emit(x)
 
@@ -412,7 +412,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
 
         if x_encoder == self.x_encoder_previous:
             # check for idle status if it appears the stage is not moving
-            (status,) = self.stage.return_status()
+            status = self.stage.is_in_motion
             if status == 0:
                 self.stop_timer()  # if indeed idle then stop the timer
 
