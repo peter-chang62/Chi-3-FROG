@@ -2,7 +2,7 @@ from qt_designer.form import Ui_MainWindow
 
 # from tab_spectrometer import SpectrometerTab
 import threading
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 from scipy.constants import c
 import numpy as np
 from spectrometer import StellarnetBlueWave
