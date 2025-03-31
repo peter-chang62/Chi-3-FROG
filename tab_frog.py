@@ -77,6 +77,7 @@ class FrogTab:
 
     def connect_push_buttons_signals_slots(self):
         self.ui.pb_frog.clicked.connect(self.slot_pb_frog)
+        self.ui.pb_save_frog.clicked.connect(self.slot_pb_save_frog)
 
     def create_threads_workers(self):
         self.event_stop_frog = threading.Event()
@@ -291,7 +292,7 @@ class FrogTab:
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
 
-    def slot_pb_save(self):
+    def slot_pb_save_frog(self):
         if self.thread_frog.isRunning():
             self.ui.tb_frog_error.setPlainText("wait for FROG to complete")
             return
