@@ -247,6 +247,7 @@ class FrogTab:
         self._t_array = np.zeros(self._N_steps)
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
         self._marginal = np.zeros(self._N_steps)
+        self._step = 0
 
         # set the frog plot axis limits
         self._transform_im = QTransform()
@@ -298,6 +299,7 @@ class FrogTab:
         # store the data
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
+        self._step = step
 
     def slot_pb_save_frog(self):
         if self._initialized_hardware:
@@ -370,6 +372,9 @@ class FrogTab:
         return p.t_width(m)
 
     def slot_worker_frog_finished(self):
+        self._t_array = self._t_array[: self._step + 1]
+        self._s_array = self._s_array[: self._step + 1]
+        self._marginal = self._marginal[: self._step + 1]
         twidth = self.calc_t_width_from_autocorrelation()
         self.ui.tb_frog_error.setPlainText(
             f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
