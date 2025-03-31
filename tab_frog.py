@@ -379,6 +379,12 @@ class FrogTab:
         self.ui.tb_frog_error.setPlainText(
             f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
         )
+        self.ui.tb_frog_error.setPlainText(
+            f"Autocorrelation EQV Width: {np.round(twidth.eqv*1e15, 3)} fs"
+        )
+        self.ui.tb_frog_error.setPlainText(
+            f"Autocorrelation RMS Width: {np.round(twidth.rms*1e15, 3)} fs"
+        )
 
 
 class WorkerFrogStepScan(QtCore.QObject):
