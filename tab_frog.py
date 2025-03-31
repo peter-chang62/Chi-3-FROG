@@ -359,7 +359,10 @@ class FrogTab:
             min_time_window,
         )
         spl = interp1d(
-            self._t_array, self._marginal, bounds_error=False, fill_value=0.0
+            self._t_array,
+            self._marginal - self._marginal.min(),
+            bounds_error=False,
+            fill_value=0.0,
         )
         p.p_t[:] = spl(p.t_grid * 1e15)
         return p.t_width(m)
