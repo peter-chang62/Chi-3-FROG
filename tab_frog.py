@@ -292,11 +292,11 @@ class FrogTab:
         if step > 0:  # the plot needs more than one point
             marginal = np.sum(s_array, axis=1)
             self.curve.setData(t_array, marginal)
+            self._marginal[: step + 1] = marginal[:]
 
         # store the data
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
-        self._marginal[: step + 1] = marginal[:]
 
     def slot_pb_save_frog(self):
         if self._initialized_hardware:
@@ -348,7 +348,7 @@ class FrogTab:
         v0 = (v_max - v_min) / 2 + v_min
         e_p = 1e-9  # not important
         t_fwhm = 100e-15  # not important
-        min_time_window = (self._marginal[-1] - self._marginal[0]) * fs
+        min_time_window = (self._t_array[-1] - self._t_array[0]) * fs
         p = Pulse.Gaussian(
             n,
             v_min,
