@@ -419,13 +419,13 @@ class WorkerFrogStepScan(QtCore.QObject):
                     0x04,
                     0x06,
                     0x00,
-                    self.dst | 0x80,
-                    self.src,
+                    self.stage.dst | 0x80,
+                    self.stage.src,
                     0x0001,
                     self._x_encoder_step,
                 )
                 self.stage.write(write_buffer)
-                self.stage.ser.read(6)
+                self.stage.ser.read(20)
                 x_encoder = self.T0_um + self._x_encoder_step * step
                 x = x_encoder / self.stage.ENC_CNT_MM
                 x *= mm / um

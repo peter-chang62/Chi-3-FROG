@@ -62,6 +62,7 @@ import serial
 import time
 from functools import wraps
 import struct
+import numpy as np
 
 
 def _auto_connect(func):
@@ -318,7 +319,7 @@ class KST201(APTDevice):
         return {"position": position, "velocity": velocity, "flags": status_bits}
 
     @_auto_connect
-    def home(self, home=None):
+    def home(self, home=True):
         if home is None:
             # Check if the device has been homed
             status_bits = self.status()["flags"]
@@ -385,4 +386,11 @@ class KST201(APTDevice):
     @property
     def is_in_motion(self):
         status = self.status()["flags"]
-        return not status["settled"]
+        to_check = [
+            status["moving forward"],
+            status["moving reverse"],
+            status["jogging forward"],
+            status["jogging reverse"],
+            status["homing"],
+        ]
+        return np.any(to_check)

@@ -320,7 +320,7 @@ class SpectrometerTab:
             self.ui.tb_error.setPlainText("stage is busy, can't read position")
             return
 
-        (x_encoder,) = self.stage.return_current_position()
+        x_encoder = self.stage.return_current_position()
         x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
 
@@ -344,7 +344,7 @@ class SpectrometerTab:
             self.ui.tb_error.setPlainText("stage is busy, can't read position")
             return
 
-        (x_encoder,) = self.stage.return_current_position()
+        x_encoder = self.stage.return_current_position()
         x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
         self.T0_um = x
@@ -400,7 +400,7 @@ class WorkerMonitorStagePos(QtCore.QObject):
 
     def slot_timeout(self):
         # get current stage position
-        (x_encoder,) = self.stage.return_current_position()
+        x_encoder = self.stage.return_current_position()
         x = x_encoder / self.stage.ENC_CNT_MM
         x *= mm / um  # convert to um
         self.progress.emit(x)
