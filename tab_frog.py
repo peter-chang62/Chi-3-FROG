@@ -290,6 +290,22 @@ class FrogTab:
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
 
+    def slot_pb_save(self):
+        if self.thread_frog.isRunning():
+            self.ui.tb_frog_error.setPlainText("wait for FROG to complete")
+            return
+
+        try:
+            data = self._s_array
+            t_grid = self._t_array
+
+        except Exception as e:
+            self.ui.tb_frog_error.setPlainText("no FROG data taken")
+            return
+
+        filename = QtWidgets.QFileDialog.getSaveFileName(self, "save FROG")
+        print(filename)
+
 
 class WorkerFrogStepScan(QtCore.QObject):
     progress = QtCore.pyqtSignal(int, float, np.ndarray, np.ndarray)
