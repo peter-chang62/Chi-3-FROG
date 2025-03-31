@@ -301,12 +301,15 @@ class FrogTab:
             data = self._s_array
             t_grid = self._t_array
 
-        except Exception as e:
+        except NameError:
             self.ui.tb_frog_error.setPlainText("no FROG data taken")
             return
 
-        filename = QtWidgets.QFileDialog.getSaveFileName(self, "save FROG")
-        print(filename)
+        filename = QtWidgets.QFileDialog.getSaveFileName(caption="save FROG")[0]
+        if filename == "":
+            return
+
+        np.savez(filename, t_grid=t_grid, spectrogram=data)
 
 
 class WorkerFrogStepScan(QtCore.QObject):
