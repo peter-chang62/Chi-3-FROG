@@ -293,9 +293,12 @@ class FrogTab:
         self._t_array[: step + 1] = t_array[:]
 
     def slot_pb_save_frog(self):
-        if self.thread_frog.isRunning():
-            self.ui.tb_frog_error.setPlainText("wait for FROG to complete")
-            return
+        if self._initialized_hardware:
+            if self.thread_frog.isRunning():
+                self.ui.tb_frog_error.setPlainText("wait for FROG to complete")
+                return
+        else:
+            self.ui.tb_frog_error.setPlainText("no FROG data taken")
 
         try:
             data = self._s_array
