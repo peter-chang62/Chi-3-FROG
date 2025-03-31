@@ -10,9 +10,11 @@ from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
-
+from pynlo.light import Pulse
+from scipy.interpolate import interp1d
 
 fs = 1e-15
+nm = 1e-9
 um = 1e-6
 mm = 1e-3
 
@@ -243,6 +245,7 @@ class FrogTab:
         # initialize arrays
         self._t_array = np.zeros(self._N_steps)
         self._s_array = np.zeros([self._N_steps, self.spectrometer.wl.size])
+        self._marginal = np.zeros(self._N_steps)
 
         # set the frog plot axis limits
         self._transform_im = QTransform()
@@ -293,6 +296,7 @@ class FrogTab:
         # store the data
         self._s_array[: step + 1] = s_array[:]
         self._t_array[: step + 1] = t_array[:]
+        self._marginal[: step + 1] = marginal[:]
 
     def slot_pb_save_frog(self):
         if self._initialized_hardware:
@@ -317,6 +321,48 @@ class FrogTab:
         np.savez(
             filename, t_grid=t_grid, wl_grid=self.spectrometer.wl, spectrogram=data
         )
+
+    def calc_t_width_from_autocorrelation(self, m):
+        """
+        n : int
+            The number of grid points.
+        v_ref : float
+            The target central frequency of the grid.
+        dv : float
+            The frequency step size. This is equal to the reciprocal of the time
+            window.
+        v0 : float, optional
+            The comoving-frame reference frequency. The default value is the center
+            frequency of the resulting grid.
+        a_v : array_like of complex, optional
+            The root-power spectrum. The default value is an empty spectrum.
+        alias : float, optional
+            The number of harmonics supported by the real-valued time domain grid
+            without aliasing. The default is 1, which only generates enough points
+            for one alias-free Nyquist zone. A higher number may be useful when
+            simulating nonlinear interactions.
+        """
+        n = 256
+        v_min = c / self.spectrometer.wl.max() / nm
+        v_max = c / self.spectrometer.wl.min() / nm
+        v0 = (v_max - v_min) / 2 + v_min
+        e_p = 1e-9  # not important
+        t_fwhm = 100e-15  # not important
+        min_time_window = (self._marginal[-1] - self._marginal[0]) * fs
+        p = Pulse.Gaussian(
+            n,
+            v_min,
+            v_max,
+            v0,
+            e_p,
+            t_fwhm,
+            min_time_window,
+        )
+        spl = interp1d(
+            self._t_array, self._marginal, bounds_error=False, fill_value=0.0
+        )
+        p.p_t[:] = spl(p.t_grid * 1e15)
+        return p.t_width(m)
 
 
 class WorkerFrogStepScan(QtCore.QObject):
