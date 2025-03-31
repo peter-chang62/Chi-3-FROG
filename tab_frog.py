@@ -47,6 +47,7 @@ class FrogTab:
     def closeEvent(self, event):
         if self._initialized_hardware:
             if self.thread_frog.isRunning():
+                self.event_stop_frog.set()
                 self.thread_frog.quit()
                 self.thread_frog.wait()
 
