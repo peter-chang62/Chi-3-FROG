@@ -98,6 +98,7 @@ class FrogTab:
         self.thread_frog.started.connect(self.worker_frog.loop)
         self.worker_frog.progress.connect(self.slot_frog_update)
         self.worker_frog.finished.connect(self.thread_frog.quit)
+        self.worker_frog.finished.connect(self.slot_worker_frog_finished)
         self.tab_spectrometer.worker_stage.finished.connect(self.start_frog)
 
     @property
@@ -322,7 +323,7 @@ class FrogTab:
             filename, t_grid=t_grid, wl_grid=self.spectrometer.wl, spectrogram=data
         )
 
-    def calc_t_width_from_autocorrelation(self, m):
+    def calc_t_width_from_autocorrelation(self, m=10):
         """
         n : int
             The number of grid points.
@@ -363,9 +364,16 @@ class FrogTab:
             self._marginal - self._marginal.min(),
             bounds_error=False,
             fill_value=0.0,
+            kind="cubic",
         )
         p.p_t[:] = spl(p.t_grid * 1e15)
         return p.t_width(m)
+
+    def slot_worker_frog_finished(self):
+        twidth = self.calc_t_width_from_autocorrelation()
+        self.ui.tb_frog_error.setPlainText(
+            f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
+        )
 
 
 class WorkerFrogStepScan(QtCore.QObject):
