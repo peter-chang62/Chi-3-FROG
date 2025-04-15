@@ -4,6 +4,8 @@ from qt_designer.form import Ui_MainWindow
 from tab_spectrometer import SpectrometerTab
 from tab_frog import FrogTab
 from tab_settings import SettingsTab
+from PyQt5 import QtCore
+import os
 
 fs = 1e-15
 um = 1e-6
@@ -29,7 +31,9 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
     app = QApplication(sys.argv)
+    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     widget = MainWindow()
     widget.show()
     sys.exit(app.exec())
