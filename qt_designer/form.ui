@@ -865,28 +865,28 @@
            <item>
             <layout class="QGridLayout" name="gridLayout_5">
              <item row="0" column="0">
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="pb_load_frog">
                <property name="text">
                 <string>Load FROG</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="pb_save_ret">
                <property name="text">
                 <string>Save Retrieval</string>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="pb_start_ret">
                <property name="text">
                 <string>Start Retrieval</string>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="pb_stop_ret">
                <property name="text">
                 <string>Stop Retrieval</string>
                </property>
@@ -897,14 +897,14 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
-              <widget class="QProgressBar" name="progressBar">
+              <widget class="QProgressBar" name="pbar_iter">
                <property name="value">
                 <number>24</number>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QProgressBar" name="progressBar_2">
+              <widget class="QProgressBar" name="pb_windows">
                <property name="value">
                 <number>24</number>
                </property>
@@ -925,10 +925,10 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="GraphicsLayoutWidget" name="gv_frog_2"/>
+            <widget class="GraphicsLayoutWidget" name="gv_ret_exp"/>
            </item>
            <item>
-            <widget class="GraphicsLayoutWidget" name="gv_frog_3"/>
+            <widget class="GraphicsLayoutWidget" name="gv_ret_recon"/>
            </item>
           </layout>
          </widget>
@@ -956,10 +956,10 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="PlotWidget" name="gv_frog_autocorr_2"/>
+            <widget class="PlotWidget" name="gv_ret_autocorr"/>
            </item>
            <item>
-            <widget class="PlotWidget" name="gv_frog_autocorr_3"/>
+            <widget class="PlotWidget" name="gv_ret_freq_marg"/>
            </item>
           </layout>
          </widget>
