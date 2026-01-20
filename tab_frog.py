@@ -11,7 +11,7 @@ import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
 from pynlo.light import Pulse
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, InterpolatedUnivariateSpline
 
 fs = 1e-15
 nm = 1e-9
@@ -325,7 +325,7 @@ class FrogTab:
             filename, t_grid=t_grid, wl_grid=self.spectrometer.wl, spectrogram=data
         )
 
-    def calc_t_width_from_autocorrelation(self, m=10):
+    def calc_t_width_from_autocorrelation(self, m=1):
         """
         n : int
             The number of grid points.
@@ -345,39 +345,49 @@ class FrogTab:
             for one alias-free Nyquist zone. A higher number may be useful when
             simulating nonlinear interactions.
         """
-        n = 256
-        v_min = c / self.spectrometer.wl.max() / nm
-        v_max = c / self.spectrometer.wl.min() / nm
-        v0 = (v_max - v_min) / 2 + v_min
-        e_p = 1e-9  # not important
-        t_fwhm = 100e-15  # not important
-        min_time_window = (self._t_array[-1] - self._t_array[0]) * fs
-        p = Pulse.Gaussian(
-            n,
-            v_min,
-            v_max,
-            v0,
-            e_p,
-            t_fwhm,
-            min_time_window,
-        )
-        spl = interp1d(
-            self._t_array,
-            self._marginal - self._marginal.min(),
-            bounds_error=False,
-            fill_value=0.0,
-            kind="cubic",
-        )
-        p.p_t[:] = spl(p.t_grid * 1e15)
-        return p.t_width(m)
+        # n = 256
+        # v_min = c / self.spectrometer.wl.max() / nm
+        # v_max = c / self.spectrometer.wl.min() / nm
+        # v0 = (v_max - v_min) / 2 + v_min
+        # e_p = 1e-9  # not important
+        # t_fwhm = 100e-15  # not important
+        # min_time_window = (self._t_array[-1] - self._t_array[0]) * fs
+        # p = Pulse.Gaussian(
+        #     n,
+        #     v_min,
+        #     v_max,
+        #     v0,
+        #     e_p,
+        #     t_fwhm,
+        #     min_time_window,
+        # )
+        # spl = interp1d(
+        #     self._t_array,
+        #     self._marginal - self._marginal.min(),
+        #     bounds_error=False,
+        #     fill_value=0.0,
+        #     kind="cubic",
+        # )
+        # p.p_t[:] = spl(p.t_grid * 1e15)
+        # return p.t_width(m)
+
+        y = self._marginal - self._marginal.min()
+        y /= y.max()
+        y -= 0.5
+        spl = InterpolatedUnivariateSpline(self._t_array, y, k=3)
+        roots = spl.roots()
+        return roots[-1] - roots[0]
 
     def slot_worker_frog_finished(self):
         self._t_array = self._t_array[: self._step + 1]
         self._s_array = self._s_array[: self._step + 1]
         self._marginal = self._marginal[: self._step + 1]
         twidth = self.calc_t_width_from_autocorrelation()
+        # self.ui.tb_frog_error.setPlainText(
+        #     f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
+        # )
         self.ui.tb_frog_error.setPlainText(
-            f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
+            f"Autocorrelation FWHM: {np.round(twidth, 3)} fs"
         )
 
 
