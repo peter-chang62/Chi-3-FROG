@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1197</width>
-    <height>1000</height>
+    <height>998</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -849,10 +849,16 @@
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_6">
+          <property name="minimumSize">
+           <size>
+            <width>291</width>
+            <height>151</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>254</width>
-            <height>131</height>
+            <width>291</width>
+            <height>151</height>
            </size>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -935,7 +941,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>88</width>
-            <height>593</height>
+            <height>693</height>
            </size>
           </property>
          </spacer>

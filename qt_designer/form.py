@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1197, 1000)
+        MainWindow.resize(1197, 998)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_13 = QtWidgets.QGridLayout(self.centralwidget)
@@ -351,7 +351,8 @@ class Ui_MainWindow(object):
         self.gridLayout_7 = QtWidgets.QGridLayout(self.tab)
         self.gridLayout_7.setObjectName("gridLayout_7")
         self.groupBox_6 = QtWidgets.QGroupBox(self.tab)
-        self.groupBox_6.setMaximumSize(QtCore.QSize(254, 131))
+        self.groupBox_6.setMinimumSize(QtCore.QSize(291, 151))
+        self.groupBox_6.setMaximumSize(QtCore.QSize(291, 151))
         self.groupBox_6.setObjectName("groupBox_6")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.groupBox_6)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
@@ -394,7 +395,7 @@ class Ui_MainWindow(object):
         self.gv_frog_3.setObjectName("gv_frog_3")
         self.horizontalLayout_2.addWidget(self.gv_frog_3)
         self.gridLayout_7.addWidget(self.groupbox, 0, 1, 2, 1)
-        spacerItem17 = QtWidgets.QSpacerItem(88, 593, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem17 = QtWidgets.QSpacerItem(88, 693, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_7.addItem(spacerItem17, 1, 0, 2, 1)
         self.groupbox1 = QtWidgets.QGroupBox(self.tab)
         self.groupbox1.setMaximumSize(QtCore.QSize(16777215, 291))
