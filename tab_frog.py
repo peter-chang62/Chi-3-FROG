@@ -1,3 +1,4 @@
+from scipy.interpolate import InterpolatedUnivariateSpline
 from qt_designer.form import Ui_MainWindow
 
 # from tab_spectrometer import SpectrometerTab
@@ -10,8 +11,11 @@ from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
+<<<<<<< HEAD
 from pynlo.light import Pulse
 from scipy.interpolate import interp1d, InterpolatedUnivariateSpline
+=======
+>>>>>>> origin/main
 
 fs = 1e-15
 nm = 1e-9
@@ -325,6 +329,7 @@ class FrogTab:
             filename, t_grid=t_grid, wl_grid=self.spectrometer.wl, spectrogram=data
         )
 
+<<<<<<< HEAD
     def calc_t_width_from_autocorrelation(self, m=1):
         """
         n : int
@@ -375,6 +380,12 @@ class FrogTab:
         y /= y.max()
         y -= 0.5
         spl = InterpolatedUnivariateSpline(self._t_array, y, k=3)
+=======
+    def calc_t_width_from_autocorrelation(self):
+        y = self._marginal - self._marginal.min()
+        y /= y.max()
+        spl = InterpolatedUnivariateSpline(self._t_array, y - 0.5)
+>>>>>>> origin/main
         roots = spl.roots()
         return roots[-1] - roots[0]
 
