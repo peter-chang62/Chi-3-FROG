@@ -11,7 +11,6 @@ from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
-from pynlo.light import Pulse
 from scipy.interpolate import InterpolatedUnivariateSpline
 
 fs = 1e-15

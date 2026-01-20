@@ -65,8 +65,8 @@ bckgnd = load_file(file_bckgnd)
 s = data.s - bckgnd.s * 1.01
 s = np.where(s < 0, 0, s)
 
-# 1 um pump leak through
-s[:, 1500:] = 0
+# 1 um fundamental leak through
+s[:, 1600:] = 0
 
 # center frog trace in time
 marginal_t = np.sum(s, axis=1)
@@ -101,7 +101,7 @@ v0 = (roots_v[1] - roots_v[0]) / 2 + roots_v[0]
 
 # find number of points needed to fill time and frequency grid
 # interpolate the experimental frog trace onto this grid
-n_points = int(np.ceil(bandwidth_t * bandwidth_v))
+n_points = int(np.ceil(bandwidth_t * bandwidth_v)[0])
 n_points = n_points if n_points % 2 == 0 else n_points + 1
 t_grid_new = np.linspace(-bandwidth_t / 2, bandwidth_t / 2, n_points)
 dt = t_grid_new[1] - t_grid_new[0]
@@ -111,14 +111,13 @@ s_v_new = s_v_interp((T_grid_new, V_grid_new)).T
 s_v_new /= s_v_new.max()
 
 # %% ----- divide by phasematching curve --------------------------------------
-# honestly it's basically flat
 bbo = BBO()
 R = bbo.R(
     wl_um=c / v_grid_new * 1e6,
     length_um=50,
     theta_pm_rad=bbo.phase_match_angle_rad(1.55),
     alpha_rad=np.arctan(
-        0.25 / 6,
+        0.25 / 6.0,
     ),
 )
 s_v_new /= R
@@ -152,13 +151,13 @@ for i in range(1, N_windows + 1):
     idx_subset_list.append(subset)
 
 # %% ----- set initial guess --------------------------------------------------
-E_i = scipy.signal.gaussian(n_points, idx_width).astype(complex)
+E_i = scipy.signal.windows.gaussian(n_points, idx_width).astype(complex)
 E_i_best = np.zeros_like(E_i)
 
-fig, ax = plt.subplots(1, 1)
-[ax.plot(i, np.zeros_like(i) + n, "C0") for n, i in enumerate(idx_subset_list)]
-ax.plot(marginal_t * len(idx_subset_list), "C1")
-ax.plot(E_i * len(idx_subset_list), "C2", linestyle="--")
+# fig, ax = plt.subplots(1, 1)
+# [ax.plot(i, np.zeros_like(i) + n, "C0") for n, i in enumerate(idx_subset_list)]
+# ax.plot(marginal_t * len(idx_subset_list), "C1")
+# ax.plot(E_i * len(idx_subset_list), "C2", linestyle="--")
 
 # %% --------------------------------------------------------------------------
 # np.random.seed(1)
@@ -235,6 +234,7 @@ for n, idx_subset in enumerate(tqdm(idx_subset_list)):
                             v_grid_new[-1] * 1e-12,
                         ),
                         aspect="auto",
+                        origin="lower",
                     )
                     img_2 = ax[0, 1].imshow(
                         s_v_new.T / s_v_new.max(),
@@ -245,6 +245,7 @@ for n, idx_subset in enumerate(tqdm(idx_subset_list)):
                             v_grid_new[-1] * 1e-12,
                         ),
                         aspect="auto",
+                        origin="lower",
                     )
 
                     (l_1,) = ax[1, 0].plot(t_grid_new * 1e15, p_t / p_t.max())
@@ -257,7 +258,7 @@ for n, idx_subset in enumerate(tqdm(idx_subset_list)):
                     ax[0, 1].set_xlabel("time (fs)")
                     ax[0, 1].set_ylabel("frequency (THz)")
                     ax[1, 0].set_xlabel("time (fs)")
-                    ax[1, 1].set_xlabel("freuqency (THz)")
+                    ax[1, 1].set_xlabel("frequency (THz)")
                     ax_2.set_ylim(-360 * 2, 360 * 2)
 
                     fig.tight_layout()
@@ -283,10 +284,10 @@ print("best error:", error_best)
 
 # %% --------------------------------------------------------------------------
 # np.savez(
-#     "retrieval_edfda_out_try2.npz",
+#     f"{file[:-4]}_retrieval.npz",
 #     t_grid=t_grid_new,
 #     v_grid=v_grid_new,
 #     a_t=E_i_best,
 #     a_v=a_v,
 # )
-# plt.savefig("retrieval_edfda_out_try2.png", dpi=300)
+# plt.savefig(f"{file[:-4]}_retrieval.png", dpi=300)

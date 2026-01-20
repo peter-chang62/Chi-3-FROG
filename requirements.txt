@@ -1,0 +1,16 @@
+You must be using Python 3.8.
+Run the following command in Anaconda command prompt after installing
+Anaconda or Miniconda:
+
+conda create --name frogenv python=3.8 numpy scipy pyqtgraph pyserial
+
+conda activate frogenv
+pip install pyusb==1.0.0b1
+
+Then install the Stellarnet Driver and Software according to their instructions.
+The instructions and installation executables are all on their USB drive.
+Install lib-usb-filter (also in their USB drive), and install the filter
+for the Stellarnet Spectrometer.
+
+Realize that you will have to uninstall and re-install the filter for the
+Stellarnet Spectrometer whenever you switch USB ports on the computer.

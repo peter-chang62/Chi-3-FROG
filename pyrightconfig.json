@@ -1,7 +1,7 @@
 {
     // Install LSP-json to get validation and autocompletion in this file.
     // "venvPath": ".",
-    "venv": "env",
+    "venv": "frog",
     "reportAttributeAccessIssue": false,
     "reportPossiblyUnboundVariable": false,
     "reportIncompatibleMethodOverride": false,
