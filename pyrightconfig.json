@@ -10,4 +10,6 @@
     "reportOptionalSubscript": false,
     "reportCallIssue": false,
     "reportArgumentType": false,
+    "reportOptionalOperand": false,
+    "reportOptionalMemberAccess": false,
 }
