@@ -128,12 +128,14 @@ class RetrievalTab:
         self.rb_focus_on_marginals = True
 
         self.thread_retrieval = QtCore.QThread()
+        self.worker_retrieval = None
 
     def connect_push_bottons_signals_slots(self):
         self.ui.pb_load_frog.clicked.connect(self.slot_pb_load_frog)
         self.ui.pb_crop_frog.clicked.connect(self.slot_pb_crop_frog)
         self.ui.pb_start_ret.clicked.connect(self.slot_pb_start_retrieval)
         self.ui.pb_stop_ret.clicked.connect(self.slot_pb_stop_ret)
+        self.ui.pb_save_ret.clicked.connect(self.slot_pb_save_retrieval)
 
     def connect_radio_button_signals_slot(self):
         self.ui.rb_marginals.toggled.connect(self.slot_rb_marginals)
@@ -206,7 +208,9 @@ class RetrievalTab:
                 )
                 return
 
-        filename_bckgnd = QtWidgets.QFileDialog.getOpenFileName(caption="load FROG")[0]
+        filename_bckgnd = QtWidgets.QFileDialog.getOpenFileName(
+            caption="load background"
+        )[0]
         if filename_bckgnd == "":
             return
         else:
@@ -443,6 +447,35 @@ class RetrievalTab:
     def slot_progbar_windows_update(self, n):
         self.ui.progbar_windows.setValue(n)
 
+    def slot_pb_save_retrieval(self):
+        if self.thread_retrieval.isRunning():
+            self.ui.tb_ret_error.setPlainText("stop retrieval first")
+            return
+
+        if self.worker_retrieval is None:
+            self.ui.tb_ret_error.setPlainText("no retrieval has been run")
+            return
+
+        if self.worker_retrieval.a_v is None:
+            self.ui.tb_ret_error.setPlainText("no retrieval has been run")
+            return
+
+        filename = QtWidgets.QFileDialog.getSaveFileName(caption="save FROG")[0]
+        if filename == "":
+            return
+
+        if filename[-4:].lower() != ".npz":
+            filename += ".npz"
+
+        np.savez(
+            filename,
+            t_grid=self.t_grid_new,
+            v_grid=self.v_grid_new,
+            a_t=self.worker_retrieval.E_i_best,
+            a_v=self.worker_retrieval.a_v,
+        )
+        self.ui.tb_ret_error.setPlainText("finished saving")
+
 
 class WorkerRetrieval(QtCore.QObject):
     progress_fields = QtCore.pyqtSignal(np.ndarray, np.ndarray, np.ndarray, np.ndarray)
@@ -459,6 +492,9 @@ class WorkerRetrieval(QtCore.QObject):
         self.t_grid_new = t_grid_new
         self.N_iter = N_iter
         self.stop_event = stop_event
+
+        self.E_i_best = None
+        self.a_v = None
 
     def loop(self):
         # ----- time windows --------------------------------------------------
@@ -497,7 +533,6 @@ class WorkerRetrieval(QtCore.QObject):
         N_iter = self.N_iter
         dt = self.t_grid_new[1] - self.t_grid_new[0]
         s_v_new = self.s_v_new
-        plot_initialized = False
         for n, idx_subset in enumerate(idx_subset_list):
             for i in range(N_iter):
                 idx_subset_scrambled = np.random.permutation(idx_subset)
@@ -549,9 +584,9 @@ class WorkerRetrieval(QtCore.QObject):
 
                         s_v_recon = (abs(shg_frog(self.E_i_best, dt)) ** 2).T
                         p_t = abs(self.E_i_best) ** 2
-                        a_v = forward_transform(self.E_i_best, dt)
-                        p_v = abs(a_v) ** 2
-                        phi = np.unwrap(np.angle(a_v))
+                        self.a_v = forward_transform(self.E_i_best, dt)
+                        p_v = abs(self.a_v) ** 2
+                        phi = np.unwrap(np.angle(self.a_v))
                         phi -= phi[n_points // 2]
                         phi *= 180 / np.pi
 

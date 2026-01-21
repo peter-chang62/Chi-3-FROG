@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
+    <width>1038</width>
     <height>783</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1038</width>
+    <height>783</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -24,7 +30,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_spectrometer">
        <attribute name="title">
@@ -1061,7 +1067,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1045</width>
+     <width>1038</width>
      <height>30</height>
     </rect>
    </property>
