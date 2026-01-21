@@ -149,7 +149,7 @@ class SpectrometerTab:
 
     @T0_um.setter
     def T0_um(self, T0_um):
-        np.savetxt("T0_um.txt", np.asarray([T0_um]))
+        np.savetxt(resource_path("T0_um.txt"), np.asarray([T0_um]))
 
     # -------- line edits and slots with no hardware read/write ---------------
     @property
