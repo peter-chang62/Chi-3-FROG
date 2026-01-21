@@ -6,13 +6,23 @@ import numpy as np
 from spectrometer import StellarnetBlueWave
 from motor_stage import ZaberStage
 import pyqtgraph as pg
-
-# from tab_frog import FrogTab
-
+import sys
+import os
 
 fs = 1e-15
 um = 1e-6
 mm = 1e-3
+
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 
 def create_curve(color="b", width=2, x=None, y=None):
@@ -135,7 +145,7 @@ class SpectrometerTab:
 
     @property
     def T0_um(self):
-        return np.genfromtxt("T0_um.txt")
+        return np.genfromtxt(resource_path("T0_um.txt"))
 
     @T0_um.setter
     def T0_um(self, T0_um):
