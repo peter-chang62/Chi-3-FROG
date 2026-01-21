@@ -261,8 +261,8 @@ class RetrievalTab:
         x, y = self.t_grid * 1e15, self.data.wl_grid * 1e9
         self._transform_im_exp.translate(x[0], y[0])
         self._transform_im_exp.scale(
-            (x[-1] - x[0]) / self.s.shape[0],
-            (y[-1] - y[0]) / self.s.shape[1],
+            (x[-1] - x[0]) / (self.s.shape[0] - 1),
+            (y[-1] - y[0]) / (self.s.shape[1] - 1),
         )
         self.im_exp.setTransform(self._transform_im_exp)
         self.im_exp.setImage(cmap(self.s / self.s.max()))
@@ -382,8 +382,8 @@ class RetrievalTab:
         x, y = self.t_grid_new * 1e15, self.v_grid_new * 1e-12
         self._transform_im_exp.translate(x[0], y[0])
         self._transform_im_exp.scale(
-            (x[-1] - x[0]) / self.s_v_new.shape[0],
-            (y[-1] - y[0]) / self.s_v_new.shape[1],
+            (x[-1] - x[0]) / (self.s_v_new.shape[0] - 1),
+            (y[-1] - y[0]) / (self.s_v_new.shape[1] - 1),
         )
         self.im_exp.setTransform(self._transform_im_exp)
         self.im_exp.setImage(cmap(self.s_v_new))
@@ -430,8 +430,8 @@ class RetrievalTab:
             x, y = self.t_grid_new * 1e15, self.v_grid_new * 1e-12
             self._transform_im_recon.translate(x[0], y[0])
             self._transform_im_recon.scale(
-                (x[-1] - x[0]) / n_points,
-                (y[-1] - y[0]) / n_points,
+                (x[-1] - x[0]) / (n_points - 1),
+                (y[-1] - y[0]) / (n_points - 1),
             )
             self.im_recon.setTransform(self._transform_im_recon)
             self.plot_initialized = True
