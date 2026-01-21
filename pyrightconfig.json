@@ -7,4 +7,7 @@
     "reportIncompatibleMethodOverride": false,
     "reportRedeclaration": false,
     "reportOperatorIssue": false,
+    "reportOptionalSubscript": false,
+    "reportCallIssue": false,
+    "reportArgumentType": false,
 }

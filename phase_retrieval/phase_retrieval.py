@@ -106,7 +106,7 @@ n_points = n_points if n_points % 2 == 0 else n_points + 1
 t_grid_new = np.linspace(-bandwidth_t / 2, bandwidth_t / 2, n_points)
 dt = t_grid_new[1] - t_grid_new[0]
 v_grid_new = fftshift(fftfreq(n_points, dt)) + v0
-T_grid_new, V_grid_new = np.meshgrid(t_grid_new, v_grid_new)
+T_grid_new, V_grid_new = np.meshgrid(t_grid_new, v_grid_new, indexing="xy")
 s_v_new = s_v_interp((T_grid_new, V_grid_new)).T
 s_v_new /= s_v_new.max()
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1197</width>
-    <height>998</height>
+    <height>1002</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_spectrometer">
        <attribute name="title">
@@ -848,47 +848,58 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="0" column="0">
-         <widget class="QGroupBox" name="groupBox_6">
+         <widget class="QGroupBox" name="">
           <property name="minimumSize">
            <size>
-            <width>291</width>
-            <height>151</height>
+            <width>281</width>
+            <height>191</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>291</width>
-            <height>151</height>
+            <width>281</width>
+            <height>191</height>
            </size>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
-            <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
-              <widget class="QPushButton" name="pb_load_frog">
-               <property name="text">
-                <string>Load FROG</string>
-               </property>
-              </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="0" column="0">
+                <widget class="QPushButton" name="pb_load_frog">
+                 <property name="text">
+                  <string>Load FROG</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="pb_save_ret">
+                 <property name="text">
+                  <string>Save Retrieval</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="pb_start_ret">
+                 <property name="text">
+                  <string>Start Retrieval</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QPushButton" name="pb_stop_ret">
+                 <property name="text">
+                  <string>Stop Retrieval</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="pb_save_ret">
+             <item>
+              <widget class="QPushButton" name="pb_crop_frog">
                <property name="text">
-                <string>Save Retrieval</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="pb_start_ret">
-               <property name="text">
-                <string>Start Retrieval</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="pb_stop_ret">
-               <property name="text">
-                <string>Stop Retrieval</string>
+                <string>crop and divide by phasematching</string>
                </property>
               </widget>
              </item>
@@ -915,7 +926,7 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="1" rowspan="2">
+        <item row="0" column="1" rowspan="3">
          <widget class="QGroupBox" name="">
           <property name="minimumSize">
            <size>
@@ -933,7 +944,17 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0" rowspan="2">
+        <item row="1" column="0">
+         <widget class="QTextBrowser" name="tb_ret_error">
+          <property name="maximumSize">
+           <size>
+            <width>281</width>
+            <height>101</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" rowspan="2">
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Orientation::Vertical</enum>
@@ -941,12 +962,12 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>88</width>
-            <height>693</height>
+            <height>546</height>
            </size>
           </property>
          </spacer>
         </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QGroupBox" name="">
           <property name="maximumSize">
            <size>
@@ -956,10 +977,10 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="PlotWidget" name="gv_ret_autocorr"/>
+            <widget class="PlotWidget" name="gv_ret_marginal_t"/>
            </item>
            <item>
-            <widget class="PlotWidget" name="gv_ret_freq_marg"/>
+            <widget class="PlotWidget" name="gv_ret_marginal_v"/>
            </item>
           </layout>
          </widget>

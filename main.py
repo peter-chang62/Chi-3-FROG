@@ -6,6 +6,7 @@ from tab_frog import FrogTab
 from tab_settings import SettingsTab
 from PyQt5 import QtCore
 import os
+from tab_retrieval import RetrievalTab
 
 fs = 1e-15
 um = 1e-6
@@ -23,6 +24,8 @@ class MainWindow(QMainWindow):
         self.tab_spectrometer.tab_frog = self.tab_frog
         self.tab_settings = SettingsTab(self.ui, self.tab_spectrometer, self.tab_frog)
         self.tab_spectrometer.tab_settings = self.tab_settings
+
+        self.tab_retrieval = RetrievalTab(self.ui)
 
     def closeEvent(self, event):
         self.tab_frog.closeEvent(event)
