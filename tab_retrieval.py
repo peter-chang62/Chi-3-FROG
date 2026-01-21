@@ -18,6 +18,8 @@ output = namedtuple("frog_data", ["t_grid", "wl_grid", "s"])
 level_of_marginal_t = 1 / np.exp(1)
 factor_bandwidth_v = 1.25
 
+cmap = plt.get_cmap("RdBu_r")
+
 
 def forward_transform(x, dx=1.0, axis=0):
     return fftshift(fft(ifftshift(x, axes=axis), axis=axis), axes=axis) * dx
@@ -176,7 +178,7 @@ class RetrievalTab:
             (y[-1] - y[0]) / (self.s.shape[1]),
         )
         self.im_exp.setTransform(self._transform_im_exp)
-        self.im_exp.setImage(self.s)
+        self.im_exp.setImage(cmap(self.s / self.s.max()))
 
         # ----- plot marginals to gui -----------------------------------------
         self.curve_marginal_t.setData(self.t_grid * 1e15, self.marginal_t)
@@ -268,6 +270,6 @@ class RetrievalTab:
             (y[-1] - y[0]) / (self.s_v_new.shape[1]),
         )
         self.im_exp.setTransform(self._transform_im_exp)
-        self.im_exp.setImage(self.s_v_new)
+        self.im_exp.setImage(cmap(self.s_v_new))
 
         self.ui.tb_ret_error.setPlainText("frog crop finished")
