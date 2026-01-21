@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1038</width>
-    <height>783</height>
+    <width>1428</width>
+    <height>1068</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -17,11 +17,55 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Chi3 FROG</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_13">
     <item row="0" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>204</width>
+        <height>84</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>204</width>
+        <height>84</height>
+       </size>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="form_qrc.qrc">:/logo/X3 Logo.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <spacer name="horizontalSpacer_20">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>1189</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0" colspan="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="minimumSize">
        <size>
@@ -56,9 +100,6 @@
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
               <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -76,9 +117,6 @@
              </item>
              <item>
               <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -183,9 +221,6 @@
              <layout class="QGridLayout" name="gridLayout_3">
               <item row="0" column="0">
                <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>40</width>
@@ -203,9 +238,6 @@
               </item>
               <item row="0" column="2">
                <spacer name="horizontalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>40</width>
@@ -216,9 +248,6 @@
               </item>
               <item row="1" column="0">
                <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>28</width>
@@ -236,9 +265,6 @@
               </item>
               <item row="1" column="2">
                <spacer name="horizontalSpacer_7">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>40</width>
@@ -362,9 +388,6 @@
                <layout class="QHBoxLayout" name="horizontalLayout_11">
                 <item>
                  <spacer name="horizontalSpacer_8">
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Vertical</enum>
-                  </property>
                   <property name="sizeHint" stdset="0">
                    <size>
                     <width>40</width>
@@ -382,9 +405,6 @@
                 </item>
                 <item>
                  <spacer name="horizontalSpacer_9">
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Vertical</enum>
-                  </property>
                   <property name="sizeHint" stdset="0">
                    <size>
                     <width>40</width>
@@ -491,9 +511,6 @@
             <layout class="QGridLayout" name="gridLayout_10">
              <item row="0" column="0">
               <spacer name="horizontalSpacer_10">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -511,9 +528,6 @@
              </item>
              <item row="0" column="2">
               <spacer name="horizontalSpacer_11">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -524,9 +538,6 @@
              </item>
              <item row="1" column="0">
               <spacer name="horizontalSpacer_14">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -544,9 +555,6 @@
              </item>
              <item row="1" column="2">
               <spacer name="horizontalSpacer_13">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -645,9 +653,6 @@
              </item>
              <item row="1" column="1">
               <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Orientation::Vertical</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -707,9 +712,6 @@
         </item>
         <item row="2" column="0">
          <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
@@ -725,126 +727,165 @@
         <string>Settings</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_12">
-        <item row="0" column="0" rowspan="2">
-         <widget class="QGroupBox" name="groupBox_4">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox">
           <property name="minimumSize">
            <size>
-            <width>342</width>
-            <height>145</height>
+            <width>344</width>
+            <height>257</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>342</width>
-            <height>145</height>
+            <width>344</width>
+            <height>257</height>
            </size>
           </property>
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="le_integration_time"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>integration time (5 - 1000 ms)</string>
-             </property>
-            </widget>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0" colspan="2">
+            <layout class="QFormLayout" name="formLayout">
+             <item row="0" column="0">
+              <widget class="QLineEdit" name="le_integration_time"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>integration time (5 - 1000 ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLineEdit" name="le_n_avg"/>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label_20">
+               <property name="text">
+                <string>scans to average (1 - 1000)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLineEdit" name="le_x_smooth"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>x smooth (0 - 4)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLineEdit" name="le_x_timing"/>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="label_22">
+               <property name="text">
+                <string>x timing (1 - 3)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="1" column="0">
-            <widget class="QLineEdit" name="le_n_avg"/>
+            <widget class="QTextBrowser" name="tb_settings_error">
+             <property name="minimumSize">
+              <size>
+               <width>181</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>181</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLabel" name="label_20">
-             <property name="text">
-              <string>scans to average (1 - 1000)</string>
+            <spacer name="horizontalSpacer_19">
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>120</width>
+               <height>20</height>
+              </size>
              </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLineEdit" name="le_x_smooth"/>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>x smooth (0 - 4)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLineEdit" name="le_x_timing"/>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="label_22">
-             <property name="text">
-              <string>x timing (1 - 3)</string>
-             </property>
-            </widget>
+            </spacer>
            </item>
           </layout>
          </widget>
         </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_12">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>769</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <spacer name="horizontalSpacer_12">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>476</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_16">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>476</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="1" rowspan="3">
-         <spacer name="verticalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>554</height>
-           </size>
-          </property>
-         </spacer>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_13">
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>17</width>
+              <height>342</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>342</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
-        <item row="2" column="0">
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="minimumSize">
-           <size>
-            <width>211</width>
-            <height>131</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>211</width>
-            <height>131</height>
-           </size>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_11">
-           <item row="0" column="0">
-            <widget class="QTextBrowser" name="tb_settings_error"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <spacer name="verticalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>554</height>
-           </size>
-          </property>
-         </spacer>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_13">
+          <item>
+           <spacer name="horizontalSpacer_17">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>476</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_18">
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>476</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -853,8 +894,132 @@
         <string>Phase Retrieval</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="1" rowspan="4">
+         <widget class="QGroupBox" name="groupBox">
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QGroupBox" name="groupBox">
+             <property name="minimumSize">
+              <size>
+               <width>671</width>
+               <height>321</height>
+              </size>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="GraphicsLayoutWidget" name="gv_ret_exp"/>
+              </item>
+              <item>
+               <widget class="GraphicsLayoutWidget" name="gv_ret_recon"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>291</height>
+              </size>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="PlotWidget" name="gv_ret_marginal_t"/>
+              </item>
+              <item>
+               <widget class="PlotWidget" name="gv_ret_marginal_v"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>88</width>
+            <height>395</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="maximumSize">
+           <size>
+            <width>264</width>
+            <height>141</height>
+           </size>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string># iterations</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="le_niter">
+               <property name="maximumSize">
+                <size>
+                 <width>113</width>
+                 <height>21</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>50</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_15">
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QTextBrowser" name="tb_ret_error"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="groupBox">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <item>
+            <widget class="QRadioButton" name="rb_marginals">
+             <property name="text">
+              <string>marginals</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="rb_retrieval">
+             <property name="text">
+              <string>retrieval result</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
         <item row="0" column="0">
-         <widget class="QGroupBox" name="">
+         <widget class="QGroupBox" name="groupBox">
           <property name="maximumSize">
            <size>
             <width>278</width>
@@ -926,151 +1091,11 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="1" rowspan="4">
-         <widget class="QGroupBox" name="">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <widget class="QGroupBox" name="">
-             <property name="minimumSize">
-              <size>
-               <width>671</width>
-               <height>321</height>
-              </size>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="GraphicsLayoutWidget" name="gv_ret_exp"/>
-              </item>
-              <item>
-               <widget class="GraphicsLayoutWidget" name="gv_ret_recon"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>291</height>
-              </size>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="PlotWidget" name="gv_ret_marginal_t"/>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="gv_ret_marginal_v"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="">
-          <property name="maximumSize">
-           <size>
-            <width>264</width>
-            <height>141</height>
-           </size>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string># iterations</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="le_niter">
-               <property name="maximumSize">
-                <size>
-                 <width>113</width>
-                 <height>21</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>50</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_15">
-               <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QTextBrowser" name="tb_ret_error"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QGroupBox" name="">
-          <layout class="QVBoxLayout" name="verticalLayout_10">
-           <item>
-            <widget class="QRadioButton" name="rb_marginals">
-             <property name="text">
-              <string>marginals</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="rb_retrieval">
-             <property name="text">
-              <string>retrieval result</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Orientation::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>88</width>
-            <height>216</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
        </layout>
       </widget>
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1038</width>
-     <height>30</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
@@ -1086,6 +1111,8 @@
    <header>pyqtgraph</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="form_qrc.qrc"/>
+ </resources>
  <connections/>
 </ui>
