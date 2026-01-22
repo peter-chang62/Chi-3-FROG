@@ -14,7 +14,7 @@
    <string>Chi3 FROG</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="sizePolicy">
@@ -43,7 +43,7 @@
     <item row="1" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_spectrometer">
        <attribute name="title">
@@ -435,204 +435,223 @@
        <attribute name="title">
         <string>FROG</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_6">
-        <item row="0" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="minimumSize">
-           <size>
-            <width>427</width>
-            <height>253</height>
-           </size>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QFrame" name="">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>427</width>
-            <height>253</height>
-           </size>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QVBoxLayout" name="verticalLayout_17">
            <item>
-            <layout class="QGridLayout" name="gridLayout_10">
-             <item row="0" column="0">
-              <spacer name="horizontalSpacer_10">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="pb_save_frog">
-               <property name="text">
-                <string>Save</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <spacer name="horizontalSpacer_11">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="0">
-              <spacer name="horizontalSpacer_14">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="pb_frog">
-               <property name="text">
-                <string>FROG</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <spacer name="horizontalSpacer_13">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QGridLayout" name="gridLayout_9">
-             <item row="0" column="0">
-              <layout class="QFormLayout" name="formLayout_3">
-               <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_start_fs">
-                 <property name="text">
-                  <string>-1000</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="label_11">
-                 <property name="text">
-                  <string>start (fs)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLineEdit" name="le_frog_start_um"/>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_10">
-                 <property name="text">
-                  <string>start (um)</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="0" column="1">
-              <layout class="QFormLayout" name="formLayout_4">
-               <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_end_fs">
-                 <property name="text">
-                  <string>1000</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="label_12">
-                 <property name="text">
-                  <string>end (fs)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLineEdit" name="le_frog_end_um"/>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>end (um)</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
-              <layout class="QFormLayout" name="formLayout_5">
-               <item row="0" column="0">
-                <widget class="QLineEdit" name="le_frog_step_fs">
-                 <property name="text">
-                  <string>5</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>step (fs)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLineEdit" name="le_frog_step_um"/>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>step (um)</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="1">
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="progbar_frog">
-             <property name="value">
-              <number>24</number>
-             </property>
+            <widget class="QGroupBox" name="groupBox">
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="0" column="0">
+                 <spacer name="horizontalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="1" colspan="2">
+                 <widget class="QPushButton" name="pb_save_frog">
+                  <property name="text">
+                   <string>Save</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="3">
+                 <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="0">
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="1" colspan="2">
+                 <widget class="QPushButton" name="pb_frog">
+                  <property name="text">
+                   <string>FROG</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="0" rowspan="2" colspan="2">
+                 <layout class="QFormLayout" name="formLayout_3">
+                  <item row="0" column="0">
+                   <widget class="QLineEdit" name="le_frog_start_fs">
+                    <property name="text">
+                     <string>-1000</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_11">
+                    <property name="text">
+                     <string>start (fs)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLineEdit" name="le_frog_start_um"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_10">
+                    <property name="text">
+                     <string>start (um)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLineEdit" name="le_frog_step_fs">
+                    <property name="text">
+                     <string>5</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>step (fs)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLineEdit" name="le_frog_step_um"/>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLabel" name="label_9">
+                    <property name="text">
+                     <string>step (um)</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="2" column="2" colspan="2">
+                 <layout class="QFormLayout" name="formLayout_4">
+                  <item row="0" column="0">
+                   <widget class="QLineEdit" name="le_frog_end_fs">
+                    <property name="text">
+                     <string>1000</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>end (fs)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLineEdit" name="le_frog_end_um"/>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLabel" name="label_13">
+                    <property name="text">
+                     <string>end (um)</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="3" column="3">
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QProgressBar" name="progbar_frog">
+                <property name="value">
+                 <number>24</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <spacer name="horizontalSpacer_20">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QTextBrowser" name="tb_frog_error">
+               <property name="maximumSize">
+                <size>
+                 <width>256</width>
+                 <height>101</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="1" rowspan="3">
+        <item>
          <widget class="QGroupBox" name="groupBox_3">
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
@@ -650,37 +669,6 @@
            </item>
           </layout>
          </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QGroupBox" name="groupBox_5">
-          <property name="maximumSize">
-           <size>
-            <width>286</width>
-            <height>132</height>
-           </size>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="0">
-            <widget class="QTextBrowser" name="tb_frog_error"/>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>244</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -1085,6 +1073,8 @@
      </widget>
     </item>
    </layout>
+   <zorder>tabWidget</zorder>
+   <zorder>label_2</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
