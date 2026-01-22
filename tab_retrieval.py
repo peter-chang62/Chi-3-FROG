@@ -153,6 +153,7 @@ class RetrievalTab:
         self.worker_retrieval.progress_fields.connect(self.slot_retrieval_update)
         self.worker_retrieval.progress_iter.connect(self.slot_progbar_iter_update)
         self.worker_retrieval.progress_windows.connect(self.slot_progbar_windows_update)
+        self.worker_retrieval.retrieval_completed.connect(self.slot_retrieval_completed)
         self.worker_retrieval.finished.connect(self.thread_retrieval.quit)
         self.worker_retrieval.finished.connect(self.slot_worker_retrieval_finished)
 
@@ -447,6 +448,15 @@ class RetrievalTab:
     def slot_progbar_windows_update(self, n):
         self.ui.progbar_windows.setValue(n)
 
+    def slot_retrieval_completed(self, p_t):
+        roots = InterpolatedUnivariateSpline(
+            self.t_grid_new, p_t / p_t.max() - 0.5
+        ).roots()
+        if len(roots < 2):
+            return
+        t_width = np.diff(roots[[0, -1]]) * 1e15
+        self.ui.tb_ret_error.setPlainText(f"FWHM = {np.round(t_width, 3)} fs")
+
     def slot_pb_save_retrieval(self):
         if self.thread_retrieval.isRunning():
             self.ui.tb_ret_error.setPlainText("stop retrieval first")
@@ -482,6 +492,7 @@ class WorkerRetrieval(QtCore.QObject):
     progress_iter = QtCore.pyqtSignal(int)
     progress_windows = QtCore.pyqtSignal(int)
     finished = QtCore.pyqtSignal()
+    retrieval_completed = QtCore.pyqtSignal(np.ndarray)
 
     def __init__(self, s_v_new, t_grid_new, N_iter, stop_event):
         super().__init__()
@@ -598,6 +609,7 @@ class WorkerRetrieval(QtCore.QObject):
             )
 
         self.exit()
+        self.retrieval_completed.emit(p_t)
 
     def exit(self):
         self.finished.emit()
