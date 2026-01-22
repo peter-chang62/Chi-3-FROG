@@ -625,14 +625,21 @@
          <widget class="QGroupBox" name="groupBox_3">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="GraphicsLayoutWidget" name="gv_frog"/>
+            <widget class="GraphicsLayoutWidget" name="gv_frog">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>2</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="PlotWidget" name="gv_frog_autocorr">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
+               <verstretch>1</verstretch>
               </sizepolicy>
              </property>
             </widget>
