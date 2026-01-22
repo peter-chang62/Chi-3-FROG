@@ -14,8 +14,8 @@
    <string>Chi3 FROG</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_8">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
      <widget class="QLabel" name="label_2">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -40,10 +40,10 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_spectrometer">
        <attribute name="title">
@@ -792,117 +792,159 @@
        <attribute name="title">
         <string>Phase Retrieval</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="1" rowspan="4">
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox">
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="minimumSize">
-              <size>
-               <width>671</width>
-               <height>321</height>
-              </size>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pb_load_frog">
+             <property name="text">
+              <string>Load FROG</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="GraphicsLayoutWidget" name="gv_ret_exp"/>
-              </item>
-              <item>
-               <widget class="GraphicsLayoutWidget" name="gv_ret_recon"/>
-              </item>
-             </layout>
             </widget>
            </item>
-           <item>
-            <widget class="QGroupBox" name="groupBox">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>291</height>
-              </size>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="pb_save_ret">
+             <property name="text">
+              <string>Save Retrieval</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="PlotWidget" name="gv_ret_marginal_t"/>
-              </item>
-              <item>
-               <widget class="PlotWidget" name="gv_ret_marginal_v"/>
-              </item>
-             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="pb_start_ret">
+             <property name="text">
+              <string>Start Retrieval</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="pb_stop_ret">
+             <property name="text">
+              <string>Stop Retrieval</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QPushButton" name="pb_crop_frog">
+             <property name="text">
+              <string>crop and divide by phasematching</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QProgressBar" name="progbar_iter">
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="2">
+            <widget class="QProgressBar" name="progbar_windows">
+             <property name="value">
+              <number>0</number>
+             </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="3" column="0">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>88</width>
-            <height>395</height>
-           </size>
-          </property>
-         </spacer>
+        <item row="0" column="1" rowspan="4">
+         <widget class="QGroupBox" name="groupBox">
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="GraphicsLayoutWidget" name="gv_ret_exp">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="GraphicsLayoutWidget" name="gv_ret_recon">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="PlotWidget" name="gv_ret_marginal_t">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="PlotWidget" name="gv_ret_marginal_v">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item row="1" column="0">
          <widget class="QGroupBox" name="groupBox">
-          <property name="maximumSize">
-           <size>
-            <width>264</width>
-            <height>141</height>
-           </size>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_12">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string># iterations</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="le_niter">
-               <property name="maximumSize">
-                <size>
-                 <width>113</width>
-                 <height>21</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>50</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_15">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string># iterations</string>
+             </property>
+            </widget>
            </item>
-           <item>
-            <widget class="QTextBrowser" name="tb_ret_error"/>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="le_niter">
+             <property name="text">
+              <string>50</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QTextBrowser" name="tb_ret_error">
+             <property name="maximumSize">
+              <size>
+               <width>211</width>
+               <height>81</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
         </item>
         <item row="2" column="0">
          <widget class="QGroupBox" name="groupBox">
-          <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
             <widget class="QRadioButton" name="rb_marginals">
              <property name="text">
@@ -923,78 +965,18 @@
           </layout>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="maximumSize">
+        <item row="3" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
            <size>
-            <width>278</width>
-            <height>196</height>
+            <width>88</width>
+            <height>395</height>
            </size>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <item>
-              <layout class="QGridLayout" name="gridLayout_5">
-               <item row="0" column="0">
-                <widget class="QPushButton" name="pb_load_frog">
-                 <property name="text">
-                  <string>Load FROG</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QPushButton" name="pb_save_ret">
-                 <property name="text">
-                  <string>Save Retrieval</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QPushButton" name="pb_start_ret">
-                 <property name="text">
-                  <string>Start Retrieval</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QPushButton" name="pb_stop_ret">
-                 <property name="text">
-                  <string>Stop Retrieval</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pb_crop_frog">
-               <property name="text">
-                <string>crop and divide by phasematching</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
-             <item>
-              <widget class="QProgressBar" name="progbar_iter">
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QProgressBar" name="progbar_windows">
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </widget>
