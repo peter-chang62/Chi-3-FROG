@@ -34,9 +34,10 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    # os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)    
     app = QApplication(sys.argv)
-    # app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     widget = MainWindow()
     widget.show()
     sys.exit(app.exec())
