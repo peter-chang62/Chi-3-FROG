@@ -1,17 +1,15 @@
 from scipy.interpolate import InterpolatedUnivariateSpline
 from qt_designer.form import Ui_MainWindow
-
-# from tab_spectrometer import SpectrometerTab
 import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
 from scipy.constants import c
 import numpy as np
-from spectrometer import StellarnetBlueWave
-from motor_stage import ZaberStage
 import pyqtgraph as pg
 import struct
 from PyQt5.QtGui import QTransform
-from scipy.interpolate import InterpolatedUnivariateSpline
+import matplotlib.pyplot as plt
+
+cmap = plt.get_cmap("RdBu_r")
 
 fs = 1e-15
 nm = 1e-9
@@ -289,7 +287,7 @@ class FrogTab:
         self.ui.lcd_current_pos_fs.display(t_fs)
 
         # update the frog image
-        self.im.setImage(s_array)
+        self.im.setImage(cmap(s_array / s_array.max()))
 
         if step > 0:  # the plot needs more than one point
             marginal = np.sum(s_array, axis=1)
@@ -351,9 +349,6 @@ class WorkerFrogStepScan(QtCore.QObject):
 
     def __init__(self, spectrometer, stage, stop_event, x_encoder_step, N_steps, T0_um):
         super().__init__()
-        spectrometer: StellarnetBlueWave
-        stage: ZaberStage
-        stop_event: threading.Event
 
         self.spec = spectrometer
         self.stage = stage
