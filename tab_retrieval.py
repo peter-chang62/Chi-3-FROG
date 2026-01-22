@@ -452,9 +452,9 @@ class RetrievalTab:
         roots = InterpolatedUnivariateSpline(
             self.t_grid_new, p_t / p_t.max() - 0.5
         ).roots()
-        if len(roots < 2):
+        if len(roots) < 2:
             return
-        t_width = np.diff(roots[[0, -1]]) * 1e15
+        t_width = (roots[-1] - roots[0]) * 1e15
         self.ui.tb_ret_error.setPlainText(f"FWHM = {np.round(t_width, 3)} fs")
 
     def slot_pb_save_retrieval(self):
