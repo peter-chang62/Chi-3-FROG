@@ -14,7 +14,7 @@
    <string>Chi3 FROG</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout_3">
+   <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="sizePolicy">
@@ -444,8 +444,8 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_17">
-           <item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0" colspan="2">
             <widget class="QGroupBox" name="groupBox">
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
@@ -621,32 +621,28 @@
              </layout>
             </widget>
            </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <spacer name="horizontalSpacer_20">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QTextBrowser" name="tb_frog_error">
-               <property name="maximumSize">
-                <size>
-                 <width>256</width>
-                 <height>101</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
+           <item row="1" column="0">
+            <widget class="QTextBrowser" name="tb_frog_error">
+             <property name="maximumSize">
+              <size>
+               <width>256</width>
+               <height>101</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <spacer name="horizontalSpacer_20">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>159</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
