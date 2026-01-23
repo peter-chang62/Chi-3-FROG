@@ -335,9 +335,6 @@ class FrogTab:
         self._s_array = self._s_array[: self._step + 1]
         self._marginal = self._marginal[: self._step + 1]
         twidth = self.calc_t_width_from_autocorrelation()
-        # self.ui.tb_frog_error.setPlainText(
-        #     f"Autocorrelation FWHM: {np.round(twidth.fwhm*1e15, 3)} fs"
-        # )
         self.ui.tb_frog_error.setPlainText(
             f"Autocorrelation FWHM: {np.round(twidth, 3)} fs"
         )

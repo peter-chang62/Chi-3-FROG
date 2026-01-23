@@ -368,7 +368,7 @@ class RetrievalTab:
             length_um=50,
             theta_pm_rad=bbo.phase_match_angle_rad(1.55),
             alpha_rad=np.arctan(
-                0.25 / 6.0,
+                0.25 / 2 / 6.0,  # .25" separation, 6" focal length
             ),
         )
         s_v_new /= R
