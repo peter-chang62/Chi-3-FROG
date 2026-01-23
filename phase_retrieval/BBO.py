@@ -171,7 +171,8 @@ class BBOSHG:
         ne2 = self.ne_theta(wl_um, theta_pm_rad)
         no = self.no(wl_um * 2)
 
-        dk = self.dk(wl_um * 2, theta_pm_rad, alpha_rad)
+        alpha_crystal = np.arcsin(np.sin(alpha_rad) / no)  # Snell's law
+        dk = self.dk(wl_um * 2, theta_pm_rad, alpha_crystal)
 
         # either f2**2 or f2**3
         term1 = f2**3 / ne2
