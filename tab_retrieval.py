@@ -253,8 +253,10 @@ class RetrievalTab:
         self.t_grid = t_grid
         self.v_grid = v_grid
         self.marginal_t = np.sum(s, axis=1)
+        self.marginal_t -= self.marginal_t.min()
         self.marginal_t /= self.marginal_t.max()
         self.marginal_v = np.sum(s, axis=0)
+        self.marginal_v -= self.marginal_v.min()
         self.marginal_v /= self.marginal_v.max()
 
         # ----- plot FROG to gui ----------------------------------------------
@@ -319,6 +321,7 @@ class RetrievalTab:
         s = self.s.copy()
         s[:, ~idx_v] = 0
         marginal_v = np.sum(s, axis=0)
+        marginal_v -= marginal_v.min()
         marginal_v /= marginal_v.max()
         marginal_v_interp = InterpolatedUnivariateSpline(
             self.v_grid[::-1], marginal_v[::-1] - 0.01
@@ -510,6 +513,7 @@ class WorkerRetrieval(QtCore.QObject):
     def loop(self):
         # ----- time windows --------------------------------------------------
         marginal_t = np.sum(self.s_v_new, axis=1)
+        marginal_t -= marginal_t.min()
         marginal_t /= marginal_t.max()
         marginal_t_interp = InterpolatedUnivariateSpline(
             self.t_grid_new, marginal_t - level_of_marginal_t
